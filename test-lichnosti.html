@@ -272,8 +272,8 @@
       qcount:'<span data-var="qnum"></span> из <span data-var="qtotal"></span>',
       restart:"Пройти заново",note:"Это развлекательный тест, построенный на реальных психологических чертах, а не медицинская диагностика.",
       sendBtn:"Отправить результат анонимно",sendSending:"Отправляем…",sendOk:"Отправлено. Спасибо!",sendErr:"Не отправилось. Попробуй ещё раз.",sendNoKey:"Отправка ещё не настроена владельцем.",
-      likert:["Полностью согласен","Согласен","Нейтрально","Не согласен","Совсем нет"],
-      likL:"Полностью согласен", likR:"Совсем нет",
+      likert:["Совсем нет","Иногда","Да"],
+      likL:"Совсем нет", likR:"Да",
       badgeCritic:"Твой внутренний критик",badgeRecovery:"Как ты восстанавливаешься после стресса",badgeMotive:"Что тебя на самом деле мотивирует",
       sdBadge:"Шкала социальной желательности",
       selfBadge:"Твоя интуиция",openBadge:"Своими словами",metaBadge:"Метафора",
@@ -291,8 +291,8 @@
       qcount:'<span data-var="qnum"></span> of <span data-var="qtotal"></span>',
       restart:"Take it again",note:"This is an entertainment test based on real psychological traits, not a medical diagnosis.",
       sendBtn:"Send result anonymously",sendSending:"Sending…",sendOk:"Sent. Thank you!",sendErr:"Couldn't send. Try again.",sendNoKey:"Sending is not configured by the owner yet.",
-      likert:["Strongly agree","Agree","Neutral","Disagree","Strongly disagree"],
-      likL:"Strongly agree", likR:"Strongly disagree",
+      likert:["Not at all","Sometimes","Yes"],
+      likL:"Not at all", likR:"Yes",
       badgeCritic:"Your inner critic",badgeRecovery:"How you recover after stress",badgeMotive:"What really motivates you",
       sdBadge:"Social desirability scale",
       selfBadge:"Your intuition",openBadge:"In your own words",metaBadge:"Metaphor",
@@ -310,8 +310,8 @@
       qcount:'<span data-var="qnum"></span> sur <span data-var="qtotal"></span>',
       restart:"Refaire le test",note:"Ceci est un test récréatif fondé sur des traits psychologiques réels, et non un diagnostic médical.",
       sendBtn:"Envoyer le résultat anonymement",sendSending:"Envoi…",sendOk:"Envoyé. Merci !",sendErr:"Échec de l'envoi. Réessayez.",sendNoKey:"L'envoi n'est pas encore configuré par le propriétaire.",
-      likert:["Tout à fait d'accord","D'accord","Neutre","Pas d'accord","Pas du tout d'accord"],
-      likL:"Tout à fait d'accord", likR:"Pas du tout d'accord",
+      likert:["Pas du tout","Parfois","Oui"],
+      likL:"Pas du tout", likR:"Oui",
       badgeCritic:"Votre critique intérieur",badgeRecovery:"Comment vous récupérez après le stress",badgeMotive:"Ce qui vous motive vraiment",
       sdBadge:"Échelle de désirabilité sociale",
       selfBadge:"Votre intuition",openBadge:"Avec vos mots",metaBadge:"Métaphore",
@@ -329,8 +329,8 @@
       qcount:'<span data-var="qnum"></span> de <span data-var="qtotal"></span>',
       restart:"Hacerla otra vez",note:"Esta es una prueba de entretenimiento basada en rasgos psicológicos reales, no un diagnóstico médico.",
       sendBtn:"Enviar resultado de forma anónima",sendSending:"Enviando…",sendOk:"Enviado. ¡Gracias!",sendErr:"No se pudo enviar. Inténtalo de nuevo.",sendNoKey:"El propietario aún no ha configurado el envío.",
-      likert:["Totalmente de acuerdo","De acuerdo","Neutro","En desacuerdo","Totalmente en desacuerdo"],
-      likL:"Totalmente de acuerdo", likR:"Totalmente en desacuerdo",
+      likert:["Nada","A veces","Sí"],
+      likL:"Nada", likR:"Sí",
       badgeCritic:"Tu crítico interno",badgeRecovery:"Cómo te recuperas del estrés",badgeMotive:"Lo que de verdad te motiva",
       sdBadge:"Escala de deseabilidad social",
       selfBadge:"Tu intuición",openBadge:"Con tus palabras",metaBadge:"Metáfora",
@@ -1129,8 +1129,8 @@ var Q_GRAM = {
   function checkNextEnabled(){
     var st = STEPS[current];
     var done=false;
-    if(st.type==="main"){ done=!!(answers[st.q]&&answers[st.q].value); }
-    else if(st.type==="sd"){ done=!!(answers["sd"+st.q]&&answers["sd"+st.q].value); }
+    if(st.type==="main"){ done=!!(answers[st.q] && answers[st.q].value!==undefined); }
+    else if(st.type==="sd"){ done=!!(answers["sd"+st.q] && answers["sd"+st.q].value!==undefined); }
     else if(st.type==="self"){ done=!!(answers["s"+st.q]); }
     else if(st.type==="open"){ done=true; }
     else { done=!!(answers["m"+st.q]); }
@@ -1151,7 +1151,7 @@ var Q_GRAM = {
       var div=document.createElement("div"); div.className="likert";
       var row=document.createElement("div"); row.className="lrow";
       var labels = UI[LANG].likert;
-      for(var v=1;v<=5;v++){
+      for(var v=0;v<=2;v++){
         (function(vv){
           var lab=document.createElement("label");
           var inp=document.createElement("input");
@@ -1163,7 +1163,7 @@ var Q_GRAM = {
           });
           var key=document.createElement("span"); key.className="lkey";
           var num=document.createElement("span"); num.className="num"; num.textContent=vv;
-          key.appendChild(num); key.appendChild(document.createTextNode(labels[vv-1]));
+          key.appendChild(num); key.appendChild(document.createTextNode(labels[vv]));
           lab.appendChild(inp); lab.appendChild(key);
           row.appendChild(lab);
         })(v);
@@ -1181,7 +1181,7 @@ var Q_GRAM = {
       var div=document.createElement("div"); div.className="likert";
       var row=document.createElement("div"); row.className="lrow";
       var labels = UI[LANG].likert;
-      for(var v=1;v<=5;v++){
+      for(var v=0;v<=2;v++){
         (function(vv){
           var lab=document.createElement("label");
           var inp=document.createElement("input");
@@ -1193,7 +1193,7 @@ var Q_GRAM = {
           });
           var key=document.createElement("span"); key.className="lkey";
           var num=document.createElement("span"); num.className="num"; num.textContent=vv;
-          key.appendChild(num); key.appendChild(document.createTextNode(labels[vv-1]));
+          key.appendChild(num); key.appendChild(document.createTextNode(labels[vv]));
           lab.appendChild(inp); lab.appendChild(key);
           row.appendChild(lab);
         })(v);
@@ -1268,33 +1268,35 @@ var Q_GRAM = {
   function axisSums(){
     var sums={};
     Q_META.forEach(function(m, idx){
-      var a=answers[idx]; if(!a) return;
+      var a=answers[idx]; if(a===undefined) return;
       var key=m[0]+"::"+m[1];
       sums[key]=sums[key]||{sum:0,n:0};
-      var agree=6-a.value;
-      if(m[2]===-1){ agree=6-agree; }
+      // Шкала 0..2 (0=нет, 1=иногда, 2=да). Для прямого вопроса согласие = value.
+      // Для обратного (dir=-1) согласие инвертируется.
+      var agree = m[2]===-1 ? (2 - a.value) : a.value;
       sums[key].sum+=agree; sums[key].n++;
     });
     var res={};
     for(var k in sums){
       var s=sums[k];
-      var pct=(s.sum - s.n)/((s.n*5) - s.n)*100;
+      // каждый пункт даёт 0..2  -> сумма 0..(n*2)
+      var pct=(s.sum / (s.n*2)) * 100;
       res[k]=Math.round(pct);
     }
     return res;
   }
 
-  // Социальная желательность: чем выше, тем больше человек "соц. желательных" ответов.
-  // Вопросы SD лежат в answers["sd"+i]. Согласие (низкий v) увеличивает склонность.
+  // Социальная желательность: согласие (2=да) с очевидно "идеальными" утверждениями повышает склонность.
+  // Вопросы SD лежат в answers["sd"+i], value 0..2.
   function sdScore(){
     var n=SD_N, sum=0, answered=0;
     for(var i=0;i<n;i++){
       var a=answers["sd"+i];
-      if(a && a.value){ answered++; sum += (6 - a.value); } // agree=5 ... disagree=1
+      if(a !== undefined && a.value !== undefined){ answered++; sum += a.value; } // 0..2
     }
     if(answered===0){ return {pct:0, answered:0}; }
     // pct 0..100, где 100 = максимум соц. желательных ответов
-    var raw=(sum/answered - 1)/4*100; // 1..5 -> 0..100
+    var raw=(sum / (answered*2)) * 100;
     return {pct:Math.round(raw), answered:answered};
   }
 
