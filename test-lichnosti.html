@@ -1,0 +1,1686 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test · Твой профиль личности</title>
+<style>
+  :root{
+    --parch:#eee3c8;
+    --parch2:#f5ecd6;
+    --paper:#fbf5e3;
+    --ink:#3b2f1d;
+    --inksoft:#6b5a3e;
+    --inkfaint:#8a7a5c;
+    --line:#c9b489;
+    --accent:#7a4a2a;
+    --accent2:#96623a;
+    --gold:#a8813c;
+    --shadow:rgba(59,47,29,.18);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    font-family:Georgia,"Times New Roman","Liberation Serif",serif;
+    background:
+      radial-gradient(rgba(120,90,40,.07) 1px, transparent 1px);
+    background-color:var(--parch);
+    background-size:26px 26px;
+    color:var(--ink);
+    line-height:1.6;
+    min-height:100vh;
+  }
+  .ornament{
+    text-align:center;color:var(--accent2);font-size:1.3rem;letter-spacing:.4em;margin:6px 0;
+    user-select:none;
+  }
+  .ornament.small{font-size:.9rem;letter-spacing:.3em}
+  .wrap{max-width:700px;margin:0 auto;padding:36px 18px 60px}
+
+  header.center{text-align:center;margin-bottom:6px;position:relative}
+  .langbar{
+    display:flex;justify-content:center;gap:8px;margin:14px 0 6px;flex-wrap:wrap;
+  }
+  .langbar button.lang{
+    font-family:Georgia,serif;font-size:.82rem;font-weight:700;letter-spacing:.08em;
+    padding:6px 14px;border:1px solid var(--line);background:transparent;color:var(--inksoft);
+    border-radius:999px;cursor:pointer;transition:all .15s;
+  }
+  .langbar button.lang:hover{border-color:var(--accent);color:var(--accent)}
+  .langbar button.lang.active{background:var(--accent);border-color:var(--accent);color:#fdf6e5}
+  .kicker{letter-spacing:.22em;text-transform:uppercase;font-size:.74rem;color:var(--inkfaint);margin:0 0 8px}
+  h1{font-size:2.1rem;line-height:1.15;margin:0 0 8px;font-weight:700}
+  .sub{color:var(--inksoft);margin:0 auto 20px;font-size:1.02rem;max-width:34em}
+
+  .card{
+    background:var(--paper);
+    border:1px solid var(--line);
+    border-radius:6px;
+    padding:26px 28px;
+    box-shadow:0 3px 18px var(--shadow);
+    position:relative;
+  }
+  .card::after{
+    content:"";position:absolute;left:8px;right:8px;bottom:0;height:8px;
+    background:linear-gradient(to bottom, rgba(90,60,25,.10), transparent);
+    border-radius:0 0 6px 6px;pointer-events:none;
+  }
+
+  .double-rule{display:flex;align-items:center;justify-content:center;gap:12px;margin:14px 0}
+  .double-rule::before,.double-rule::after{content:"";height:2px;flex:1;background:var(--line)}
+  .double-rule span{color:var(--gold);font-size:1rem;letter-spacing:.1em}
+
+  .progress{height:8px;background:var(--parch2);border:1px solid var(--line);border-radius:4px;overflow:hidden;margin-bottom:18px}
+  .progress > i{display:block;height:100%;background:var(--accent2);transition:width .25s ease}
+
+  .q-progress{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;color:var(--inksoft);font-size:.88rem}
+  .q-count b{color:var(--ink)}
+  .block-badge{
+    background:var(--parch2);color:var(--accent);font-weight:700;font-size:.72rem;
+    letter-spacing:.1em;text-transform:uppercase;padding:5px 12px;border:1px solid var(--line);border-radius:999px;
+  }
+
+  h2{font-size:1.2rem;margin:0 0 16px;font-weight:700;line-height:1.4}
+
+  .likert{margin-top:8px}
+  .likert .lrow{display:flex;gap:6px;margin-bottom:6px}
+  .likert .lrow label{
+    flex:1;text-align:center;cursor:pointer;border:1px solid var(--line);border-radius:6px;
+    background:#fdf8e8;padding:10px 4px;font-size:.8rem;color:var(--inkfaint);transition:all .15s;line-height:1.3;
+  }
+  .likert .lrow label:hover{border-color:var(--accent2);color:var(--ink);background:#faf0d8}
+  .likert .lrow input{position:absolute;opacity:0;pointer-events:none}
+  .likert .lrow input:checked + .lkey .num{
+    background:var(--accent);color:#fdf6e5;border-color:var(--accent);
+  }
+  .likert .lrow input:checked + .lkey{color:var(--accent);border-color:var(--accent);background:#f6ead0}
+  .lkey .num{
+    display:block;width:26px;height:26px;line-height:22px;margin:0 auto 6px;border:2px solid var(--line);
+    border-radius:50%;color:var(--inkfaint);font-weight:700;font-size:.82rem;transition:all .15s;
+  }
+  .lscale{display:flex;justify-content:space-between;font-size:.74rem;color:var(--inkfaint);margin-top:2px}
+
+  .opt-grid{display:flex;flex-direction:column;gap:10px}
+  label.opt{border:1px solid var(--line);border-radius:6px;background:#fdf8e8;padding:13px 15px;cursor:pointer;display:flex;gap:12px;align-items:flex-start;transition:border-color .15s,background .15s}
+  label.opt:hover{border-color:var(--accent2);background:#faf0d8}
+  label.opt input{margin-top:3px;accent-color:var(--accent);flex:none}
+  label.opt .txt{font-size:.98rem}
+
+  .actions{margin-top:24px;display:flex;gap:10px;flex-wrap:wrap}
+  button{
+    font-family:Georgia,serif;font-size:1rem;border:1px solid var(--line);border-radius:6px;
+    padding:12px 22px;cursor:pointer;font-weight:700;transition:all .15s;
+  }
+  button:active{transform:translateY(1px)}
+  .primary{background:var(--accent);color:#fdf6e5;border-color:var(--accent)}
+  .primary:hover{background:#66391f}
+  .primary:disabled{opacity:.4;cursor:not-allowed}
+  .ghost{background:transparent;color:var(--inksoft)}
+  .ghost:hover{border-color:var(--accent2);color:var(--accent)}
+
+  .screen{display:none}
+  .screen.active{display:block;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+  /* result */
+  .result-head{text-align:center;margin-bottom:26px}
+  .type-badge{
+    display:inline-block;background:var(--parch2);color:var(--accent);font-weight:700;font-size:.74rem;
+    letter-spacing:.14em;text-transform:uppercase;padding:6px 16px;border:1px solid var(--line);border-radius:999px;margin-bottom:12px;
+  }
+  .result-title{font-size:1.9rem;line-height:1.2;margin:0 0 8px;font-weight:700}
+  .result-tag{color:var(--inksoft);margin:0}
+
+  section.res-block{margin-bottom:28px}
+  section.res-block h3{font-size:1.15rem;margin:0 0 4px;color:var(--accent)}
+  .res-lead{color:var(--inksoft);font-size:.9rem;margin:0 0 14px;font-style:italic}
+  .desc{font-size:1rem;margin:0 0 14px}
+  .score-row{display:flex;flex-direction:column;gap:4px;margin-bottom:12px}
+  .score-head{display:flex;justify-content:space-between;font-size:.86rem;color:var(--inksoft)}
+  .score-bar{height:12px;background:var(--parch2);border:1px solid var(--line);border-radius:6px;overflow:hidden}
+  .score-bar > i{display:block;height:100%;background:var(--accent2);border-radius:6px;transition:width .4s ease}
+  .score-bar > i.top{background:var(--accent)}
+
+  section.res-detail{border-top:2px solid var(--line);margin-top:4px;padding-top:18px;margin-bottom:24px}
+  section.res-detail h4{font-size:.95rem;margin:0 0 12px;text-transform:uppercase;letter-spacing:.12em;color:var(--inkfaint)}
+  .meta-gap{background:#faf0d8;border:1px solid var(--line);border-radius:6px;padding:14px 16px;margin-bottom:12px}
+  .meta-gap .g{font-weight:700;margin:0 0 4px}
+  .meta-gap .g b{color:var(--accent)}
+  .meta-note{font-size:.9rem;color:var(--inksoft)}
+
+  .charts{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin:4px 0 26px}
+  .chart-card{background:#fdf8e8;border:1px solid var(--line);border-radius:6px;padding:16px}
+  .chart-card h5{margin:0 0 10px;font-size:.85rem;text-transform:uppercase;letter-spacing:.1em;color:var(--inkfaint);text-align:center}
+  .chart-card svg{display:block;width:100%;height:auto}
+  .legend{font-size:.78rem;color:var(--inksoft);margin-top:8px;line-height:1.7}
+  .legend .lg{display:inline-flex;align-items:center;gap:6px;margin-right:10px}
+  .legend .sw{display:inline-block;width:10px;height:10px;border-radius:2px;flex:none;border:1px solid rgba(0,0,0,.1)}
+  @media(max-width:640px){.charts{grid-template-columns:1fr}}
+  .rec-list{margin:6px 0 0;padding:0;list-style:none}
+  .rec-list li{position:relative;padding:7px 0 7px 26px;font-size:.97rem}
+  .rec-list li::before{content:"❧";position:absolute;left:0;color:var(--accent);font-size:.9rem}
+
+  .note{font-size:.8rem;color:var(--inkfaint);margin-top:20px;text-align:center}
+  .send-status{font-size:.85rem;color:var(--inksoft);margin-top:14px;min-height:1.2em;font-style:italic;text-align:center}
+  .send-status.error{color:var(--accent)}
+  .send-status.ok{color:var(--ok,#5d7a4a)}
+  pre.send-report{
+    font-family:Georgia,serif;white-space:pre-wrap;line-height:1.7;font-size:.95rem;
+    background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:18px 20px;
+    margin-top:16px;color:var(--ink);box-shadow:inset 0 0 24px rgba(120,90,40,.06);
+  }
+  textarea{font-family:Georgia,serif;width:100%;font:inherit;padding:12px 14px;border:1px solid var(--line);border-radius:6px;resize:vertical;background:#fdf8e8;color:var(--ink)}
+  .field-label{display:block;font-size:.86rem;color:var(--inksoft);margin-bottom:8px;font-style:italic}
+  .hint{font-size:.78rem;color:var(--inkfaint);margin:8px 0 0}
+  input.name-input{
+    font-family:Georgia,serif;font-size:1.05rem;width:100%;max-width:20em;color:var(--ink);
+    padding:12px 14px;border:1px solid var(--line);border-radius:6px;background:#fdf8e8;margin-top:2px;
+  }
+  input.name-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 2px rgba(122,74,42,.15)}
+  .name-hint{font-size:.78rem;color:var(--accent);margin:8px 0 0;font-style:italic}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="langbar" id="langbar">
+    <button class="lang" data-lang="ru">RU</button>
+    <button class="lang" data-lang="en">EN</button>
+    <button class="lang" data-lang="fr">FR</button>
+    <button class="lang" data-lang="es">ES</button>
+  </div>
+
+  <header class="center">
+    <div class="ornament">✦ ❦ ✦</div>
+    <p class="kicker" data-i18n="kicker">Психологический тест</p>
+    <h1 data-i18n="title">Твой профиль личности</h1>
+    <p class="sub" data-i18n="sub">3 блока · 60 вопросов · честные ответы = точный результат</p>
+    <div class="double-rule"><span>❦</span></div>
+  </header>
+
+  <!-- start -->
+  <section id="screen-start" class="screen active">
+    <div class="card">
+      <p data-i18n="intro1">Тест состоит из трёх независимых блоков: твой <b>внутренний критик</b>, то, как ты <b>восстанавливаешься после стресса</b>, и то, что тебя <b>на самом деле мотивирует</b>. В конце — несколько вопросов на интуицию, затем полный профиль с анализом, диаграммами и рекомендациями.</p>
+      <p data-i18n="intro2">Отвечай по шкале согласия — первое, что приходит в голову, обычно самое честное. На весь тест уйдёт 7–10 минут.</p>
+      <label class="field-label" for="in-name" data-i18n="nameLabel">Представься: как тебя зовут?</label>
+      <input type="text" id="in-name" class="name-input" maxlength="40" autocomplete="off" placeholder="имя" data-i18n="namePh">
+      <p class="name-hint" id="name-hint" hidden data-i18n="nameHint">Введи имя, чтобы продолжить.</p>
+      <div class="actions">
+        <button class="primary" id="btn-start" data-i18n="startBtn">Начать тест</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- quiz -->
+  <section id="screen-quiz" class="screen">
+    <div class="card">
+      <div class="progress"><i id="progress-bar" style="width:0%"></i></div>
+      <div class="q-progress">
+        <span class="q-count" data-i18n="qcount"><span data-var="qnum"></span> из <span data-var="qtotal"></span></span>
+        <span class="block-badge" id="block-badge"></span>
+      </div>
+      <h2 id="q-text"></h2>
+      <div id="q-input"></div>
+      <div class="actions">
+        <button class="ghost" id="btn-prev" data-i18n="prev">Назад</button>
+        <button class="primary" id="btn-next" data-i18n="next">Далее</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- result -->
+  <section id="screen-result" class="screen">
+    <div class="card">
+      <div class="result-head">
+        <span class="type-badge" data-i18n="resultBadge">Твой профиль</span>
+        <h2 class="result-title" data-i18n="resultTitle">Вот как ты устроен</h2>
+        <p class="result-tag" id="res-summary-tag"></p>
+      </div>
+      <div id="res-body"></div>
+      <div class="actions" style="align-items:center">
+        <button class="ghost" id="btn-restart" data-i18n="restart">Пройти заново</button>
+        <button class="primary" id="btn-send" data-i18n="sendBtn">Отправить результат анонимно</button>
+      </div>
+      <p class="send-status" id="send-status" role="status" aria-live="polite"></p>
+      <pre class="send-report" id="send-report" hidden></pre>
+      <p class="note" data-i18n="note">Это развлекательный тест, построенный на реальных психологических чертах, а не диагностика.</p>
+    </div>
+  </section>
+
+</div>
+
+<script>
+
+  "use strict";
+
+  // ================= SUPABASE CONFIG =================
+  // Твой проект Supabase. Вставь сюда свой публичный anon-ключ (Settings → API).
+  // Ключ публичный — его безопасно держать в HTML. Без него кнопка отправки не сработает.
+  var SB_CONFIG = {
+    url: "https://cnqldhppcxlsvhtzbygu.supabase.co",   // Project URL
+    anonKey: "sb_publishable_83kaW7PWGFuHjpfkgSoG5A_eZKL9MRd",     // anon public key
+    table: "test_results"                              // имя таблицы (см. supabase_results.sql)
+  };
+
+  var UI = {
+    ru:{kicker:"Психологический тест",title:"Твой профиль личности",sub:"3 блока · 60 вопросов · честные ответы = точный результат",
+      intro1:"Тест состоит из трёх независимых блоков: твой <b>внутренний критик</b>, то, как ты <b>восстанавливаешься после стресса</b>, и то, что тебя <b>на самом деле мотивирует</b>. В конце — несколько вопросов на интуицию, затем полный профиль с анализом, диаграммами и рекомендациями.",
+      intro2:"Отвечай по шкале согласия — первое, что приходит в голову, обычно самое честное. На весь тест уйдёт 7–10 минут.",
+      nameLabel:"Представься: как тебя зовут?",namePh:"имя",nameHint:"Введи имя, чтобы продолжить.",
+      startBtn:"Начать тест",prev:"Назад",next:"Далее",resultBadge:"Твой профиль",resultTitle:"Вот как ты устроен",
+      qcount:'<span data-var="qnum"></span> из <span data-var="qtotal"></span>',
+      restart:"Пройти заново",note:"Это развлекательный тест, построенный на реальных психологических чертах, а не медицинская диагностика.",
+      sendBtn:"Отправить результат анонимно",sendSending:"Отправляем…",sendOk:"Отправлено. Спасибо!",sendErr:"Не отправилось. Попробуй ещё раз.",sendNoKey:"Отправка ещё не настроена владельцем.",
+      likert:["Полностью согласен","Согласен","Нейтрально","Не согласен","Совсем нет"],
+      likL:"Полностью согласен", likR:"Совсем нет",
+      badgeCritic:"Твой внутренний критик",badgeRecovery:"Как ты восстанавливаешься после стресса",badgeMotive:"Что тебя на самом деле мотивирует",
+      sdBadge:"Шкала социальной желательности",
+      selfBadge:"Твоя интуиция",openBadge:"Своими словами",metaBadge:"Метафора",
+      openLabel:"Твой ответ (можно своей фразой)",openHint:"Можно пропустить — ответ не обязателен.",openPh:"Напиши коротко, своими словами…",
+      metaTitle:"Твои метафоры · языком образов",selfTitle:"Ты vs тест · сверка интуиции",recTitle:"Индивидуальный разбор и рекомендации",
+      sdTitle:"Шкала социальной желательности",sdLow:"Низкая: ты отвечаешь искренне и не стремишься приукрасить себя — результат близок к реальности.",sdMid:"Умеренная: в целом ты честен, но в некоторых вопросах можешь давать «социально желательные» ответы.",sdHigh:"Высокая: заметна склонность показывать себя с лучшей стороны. Учитывай это при интерпретации отдельных ответов.",
+      mixedTitle:"Смешанный профиль",mixedLead:"Твои результаты не укладываются в один тип — это нормально и индивидуально: ",
+      openNoteTitle:"Заметно по твоим ответам",openNote:"Твои формулировки («{{list}}») хорошо дополняют шкалы: используй их как рабочие заметки при выборе практик.",
+      percent:"%",of:"из" },
+    en:{kicker:"Psychological test",title:"Your personality profile",sub:"3 parts · 60 questions · honest answers = accurate result",
+      intro1:"The test consists of three independent parts: your <b>inner critic</b>, how you <b>recover after stress</b>, and what actually <b>motivates you</b>. At the end — a few intuition questions, then a full profile with analysis, charts and recommendations.",
+      intro2:"Answer on the agreement scale — your first reaction is usually the most honest. It takes about 7–10 minutes.",
+      nameLabel:"Introduce yourself: what is your name?",namePh:"name",nameHint:"Enter a name to continue.",
+      startBtn:"Start the test",prev:"Back",next:"Next",resultBadge:"Your profile",resultTitle:"How you are wired",
+      qcount:'<span data-var="qnum"></span> of <span data-var="qtotal"></span>',
+      restart:"Take it again",note:"This is an entertainment test based on real psychological traits, not a medical diagnosis.",
+      sendBtn:"Send result anonymously",sendSending:"Sending…",sendOk:"Sent. Thank you!",sendErr:"Couldn't send. Try again.",sendNoKey:"Sending is not configured by the owner yet.",
+      likert:["Strongly agree","Agree","Neutral","Disagree","Strongly disagree"],
+      likL:"Strongly agree", likR:"Strongly disagree",
+      badgeCritic:"Your inner critic",badgeRecovery:"How you recover after stress",badgeMotive:"What really motivates you",
+      sdBadge:"Social desirability scale",
+      selfBadge:"Your intuition",openBadge:"In your own words",metaBadge:"Metaphor",
+      openLabel:"Your answer (your own phrase is fine)",openHint:"You can skip it — an answer is optional.",openPh:"Write a short phrase…",
+      metaTitle:"Your metaphors · in images",selfTitle:"You vs the test · intuition check",recTitle:"Individual analysis and recommendations",
+      sdTitle:"Social desirability scale",sdLow:"Low: you answer sincerely and do not try to embellish yourself — the result is close to reality.",sdMid:"Moderate: you are generally honest, but in some questions you may give 'socially desirable' answers.",sdHigh:"High: there is a tendency to show yourself in the best light. Keep this in mind when interpreting individual answers.",
+      mixedTitle:"Mixed profile",mixedLead:"Your results do not fit one type — that is normal and unique: ",
+      openNoteTitle:"Visible in your answers",openNote:"Your phrases — {{list}} — nicely complement the scales: use them as working notes when choosing practices.",
+      percent:"%",of:"of" },
+    fr:{kicker:"Test psychologique",title:"Votre profil de personnalité",sub:"3 parties · 60 questions · des réponses honnêtes = un résultat précis",
+      intro1:"Le test se compose de trois parties indépendantes : votre <b>critique intérieur</b>, la façon dont vous <b>récupérez après le stress</b>, et ce qui vous <b>motive réellement</b>. À la fin — quelques questions d'intuition, puis un profil complet avec analyse, graphiques et recommandations.",
+      intro2:"Répondez sur l'échelle d'accord — la première réaction est généralement la plus honnête. Il faut environ 7 à 10 minutes.",
+      nameLabel:"Présentez-vous : quel est votre prénom ?",namePh:"prénom",nameHint:"Entrez un prénom pour continuer.",
+      startBtn:"Commencer le test",prev:"Retour",next:"Suivant",resultBadge:"Votre profil",resultTitle:"Comment vous fonctionnez",
+      qcount:'<span data-var="qnum"></span> sur <span data-var="qtotal"></span>',
+      restart:"Refaire le test",note:"Ceci est un test récréatif fondé sur des traits psychologiques réels, et non un diagnostic médical.",
+      sendBtn:"Envoyer le résultat anonymement",sendSending:"Envoi…",sendOk:"Envoyé. Merci !",sendErr:"Échec de l'envoi. Réessayez.",sendNoKey:"L'envoi n'est pas encore configuré par le propriétaire.",
+      likert:["Tout à fait d'accord","D'accord","Neutre","Pas d'accord","Pas du tout d'accord"],
+      likL:"Tout à fait d'accord", likR:"Pas du tout d'accord",
+      badgeCritic:"Votre critique intérieur",badgeRecovery:"Comment vous récupérez après le stress",badgeMotive:"Ce qui vous motive vraiment",
+      sdBadge:"Échelle de désirabilité sociale",
+      selfBadge:"Votre intuition",openBadge:"Avec vos mots",metaBadge:"Métaphore",
+      openLabel:"Votre réponse (une phrase à vous suffit)",openHint:"Vous pouvez passer — la réponse est facultative.",openPh:"Écrivez une courte phrase…",
+      metaTitle:"Vos métaphores · en images",selfTitle:"Vous vs le test · vérification d'intuition",recTitle:"Analyse individuelle et recommandations",
+      sdTitle:"Échelle de désirabilité sociale",sdLow:"Faible : vous répondez sincèrement sans chercher à vous embellir — le résultat est proche de la réalité.",sdMid:"Modérée : vous êtes globalement honnête, mais sur certaines questions vous pouvez donner des réponses « socialement désirables ».",sdHigh:"Élevée : tendance marquée à se montrer sous son meilleur jour. Tenir compte de cela en interprétant les réponses.",
+      mixedTitle:"Profil mixte",mixedLead:"Vos résultats ne se réduisent pas à un seul type — c'est normal et unique : ",
+      openNoteTitle:"Visible dans vos réponses",openNote:"Vos formulations (« {{list}} ») complètent bien les échelles : utilisez-les comme notes pratiques pour choisir les exercices.",
+      percent:"%",of:"sur" },
+    es:{kicker:"Test psicológico",title:"Tu perfil de personalidad",sub:"3 partes · 60 preguntas · respuestas honestas = resultado preciso",
+      intro1:"La prueba consta de tres partes independientes: tu <b>crítico interno</b>, cómo <b>te recuperas del estrés</b> y lo que <b>de verdad te motiva</b>. Al final — varias preguntas de intuición, luego un perfil completo con análisis, gráficos y recomendaciones.",
+      intro2:"Responde en la escala de acuerdo: la primera reacción suele ser la más honesta. Se tarda unos 7–10 minutos.",
+      nameLabel:"Preséntate: ¿cómo te llamas?",namePh:"nombre",nameHint:"Introduce un nombre para continuar.",
+      startBtn:"Empezar la prueba",prev:"Atrás",next:"Siguiente",resultBadge:"Tu perfil",resultTitle:"Cómo estás hecho",
+      qcount:'<span data-var="qnum"></span> de <span data-var="qtotal"></span>',
+      restart:"Hacerla otra vez",note:"Esta es una prueba de entretenimiento basada en rasgos psicológicos reales, no un diagnóstico médico.",
+      sendBtn:"Enviar resultado de forma anónima",sendSending:"Enviando…",sendOk:"Enviado. ¡Gracias!",sendErr:"No se pudo enviar. Inténtalo de nuevo.",sendNoKey:"El propietario aún no ha configurado el envío.",
+      likert:["Totalmente de acuerdo","De acuerdo","Neutro","En desacuerdo","Totalmente en desacuerdo"],
+      likL:"Totalmente de acuerdo", likR:"Totalmente en desacuerdo",
+      badgeCritic:"Tu crítico interno",badgeRecovery:"Cómo te recuperas del estrés",badgeMotive:"Lo que de verdad te motiva",
+      sdBadge:"Escala de deseabilidad social",
+      selfBadge:"Tu intuición",openBadge:"Con tus palabras",metaBadge:"Metáfora",
+      openLabel:"Tu respuesta (vale tu propia frase)",openHint:"Puedes saltarla — la respuesta es opcional.",openPh:"Escribe una frase breve…",
+      metaTitle:"Tus metáforas · en imágenes",selfTitle:"Tú vs la prueba · comprobación de intuición",recTitle:"Análisis individual y recomendaciones",
+      sdTitle:"Escala de deseabilidad social",sdLow:"Baja: respondes con sinceridad y no intentas embellecerte — el resultado está cerca de la realidad.",sdMid:"Moderada: en general eres honesto, pero en algunas preguntas puedes dar respuestas «socialmente deseables».",sdHigh:"Alta: hay una tendencia a mostrarte bajo tu mejor luz. Ten esto en cuenta al interpretar respuestas individuales.",
+      mixedTitle:"Perfil mixto",mixedLead:"Tus resultados no se reducen a un solo tipo — es normal y esto es único: ",
+      openNoteTitle:"Visible en tus respuestas",openNote:"Tus frases («{{list}}») complementan bien las escalas: úsalas como notas prácticas al elegir ejercicios.",
+      percent:"%",of:"de" }
+  };
+
+  // ============ I18N: results / axes / labels ============
+  var CRIT_LABEL = {
+    ru:{soft:"Мягкий критик",softT:"ты скорее поддерживаешь себя, чем грызёшь",mid:"Умеренный критик",midT:"критик помогает, но иногда грубит",hard:"Строгий критик",hardT:"твой внутренний голос может быть слишком суров"},
+    en:{soft:"Gentle critic",softT:"you support yourself more than you nag",mid:"Moderate critic",midT:"the critic helps but sometimes gets harsh",hard:"Strict critic",hardT:"your inner voice can be too harsh"},
+    fr:{soft:"Critique doux",softT:"tu te soutiens plutôt que de te reprocher",mid:"Critique modéré",midT:"le critique aide mais parfois se durcit",hard:"Critique sévère",hardT:"ta voix intérieure peut être trop dure"},
+    es:{soft:"Crítico suave",softT:"te apoyas a ti mismo más que te regañas",mid:"Crítico moderado",midT:"el crítico ayuda pero a veces se vuelve duro",hard:"Crítico severo",hardT:"tu voz interior puede ser demasiado severa"}
+  };
+
+  var AXIS_LABEL = {
+    ru:{voice:"Громкость критика",harsh:"Требовательность к себе",forgive:"Самопрощение",
+        physical:"Физическая перезагрузка",emotional:"Эмоциональная перезагрузка",mental:"Мысленная перезагрузка",
+        goal:"Цель и результат",social:"Признание и близость",growth:"Рост и интерес",stable:"Стабильность",
+        b1:"Критик",b2:"Восстановление",b3:"Мотивация",
+        criticBar:"Итог: критик",recBar:"Итог: восстановление",motBar:"Итог: мотивация"},
+    en:{voice:"Critic loudness",harsh:"Self-demand",forgive:"Self-forgiveness",
+        physical:"Physical reset",emotional:"Emotional reset",mental:"Mental reset",
+        goal:"Goal & result",social:"Recognition & closeness",growth:"Growth & interest",stable:"Stability",
+        b1:"Critic",b2:"Recovery",b3:"Motivation",
+        criticBar:"Total: critic",recBar:"Total: recovery",motBar:"Total: motivation"},
+    fr:{voice:"Volume du critique",harsh:"Exigence envers soi",forgive:"Pardon de soi",
+        physical:"Réinitialisation physique",emotional:"Réinitialisation émotionnelle",mental:"Réinitialisation mentale",
+        goal:"But et résultat",social:"Reconnaissance & proximité",growth:"Croissance & intérêt",stable:"Stabilité",
+        b1:"Critique",b2:"Récupération",b3:"Motivation",
+        criticBar:"Total : critique",recBar:"Total : récupération",motBar:"Total : motivation"},
+    es:{voice:"Volumen del crítico",harsh:"Exigencia hacia uno",forgive:"Autoperdón",
+        physical:"Recarga física",emotional:"Recarga emocional",mental:"Recarga mental",
+        goal:"Meta y resultado",social:"Reconocimiento & cercanía",growth:"Crecimiento & interés",stable:"Estabilidad",
+        b1:"Crítico",b2:"Recuperación",b3:"Motivación",
+        criticBar:"Total: crítico",recBar:"Total: recuperación",motBar:"Total: motivación"}
+  };
+
+  var REC_LABEL = {
+    ru:{physical:"тело",emotional:"люди",mental:"тишина и мысли",
+        goal:"достижение",social:"признание и близость",growth:"рост и интерес",stable:"стабильность",
+        recLead:"Твой ведущий канал: ",motLead:"Твой ведущий мотиватор: ",critType:"Тип: "},
+    en:{physical:"the body",emotional:"people",mental:"silence and thoughts",
+        goal:"achievement",social:"recognition and closeness",growth:"growth and interest",stable:"stability",
+        recLead:"Your leading channel: ",motLead:"Your leading driver: ",critType:"Type: "},
+    fr:{physical:"le corps",emotional:"les personnes",mental:"le silence et les pensées",
+        goal:"la réussite",social:"la reconnaissance et la proximité",growth:"la croissance et l'intérêt",stable:"la stabilité",
+        recLead:"Votre canal principal : ",motLead:"Votre motivation principale : ",critType:"Type : "},
+    es:{physical:"el cuerpo",emotional:"las personas",mental:"el silencio y los pensamientos",
+        goal:"el logro",social:"el reconocimiento y la cercanía",growth:"el crecimiento y el interés",stable:"la estabilidad",
+        recLead:"Tu canal principal: ",motLead:"Tu motivación principal: ",critType:"Tipo: "}
+  };
+
+  var DESC = {
+    ru:{
+      crit_soft:"Твой внутренний голос звучит скорее как добрый наставник — это позитивный компонент я-концепции и устойчивая самооценка. Ты умеешь прощать себя и не превращать ошибку в приговор. Главный риск — иногда недостаточно требователен к себе и можешь откладывать развитие. Ошибку ты склонен воспринимать как опыт, а не как удар по самовосприятию — береги этот баланс.",
+      crit_mid:"У тебя рабочий баланс: критик помогает держать планку, но его тон резче, чем нужно. В я-концепции заметно расхождение между «я реальным» и «я идеальным» — оно и подпитывает самокритику. Ты замечаешь ошибки и учишься на них, в целом прощаешь себя. Следи, чтобы требовательность не превращалась в усталость от самого себя — мягкость к себе тоже продуктивна.",
+      crit_hard:"Твой критик громок и суров: велик разрыв между «я идеальным» и «я реальным», заметна низкая самооценка. Он держит в тонусе, но цена высока: тревога, чувство «недостаточно хорош». Ты чаще ругаешь себя, чем хвалишь. Важно учиться самоподдержке: останавливать жёсткий голос и работать над стабилизацией я-концепции.",
+      rec_physical:"Ты восстанавливаешься через тело: сон, движение, прогулки, телесный комфорт. По сути это стратегия совладания (копинг), направленная на телесную разрядку напряжения. Перезагрузка для тебя — прежде всего физическая. Когда не высыпаешься или не двигаешься, всё идёт по наклонной. Совет: планируй отдых как важное дело, а не как «остаток времени».",
+      rec_emotional:"Твой главный источник энергии — люди: это эмоционально-ориентированный копинг, когда поддержка окружения снижает напряжение. Тебе помогает выговориться, быть рядом с близкими. В полной изоляции ты закисаешь. Совет: не жди выгорания — заранее собирай «свою банду», но учись восстанавливаться и автономно.",
+      rec_mental:"Ты восстанавливаешься в тишине и наедине с собой: порядок, анализ, уединение — это рациональный, проблемно-ориентированный копинг, совладание через осмысление. Ты не тратишь энергию на пустое. Совет: важно, чтобы тишина была не избеганием, а способом переварить проблему — тогда к людям будешь выходить наполненным.",
+      mot_goal:"Тебя двигает цель и видимый результат — выраженная мотивация достижения. Ты включаешься, когда есть вызов и понятно, к чему идти. «Просто работать» без цели гасит тебя. Совет: ставь ясные, измеримые задачи и оглядывайся на путь — тогда мотивация устойчива; следи, чтобы атрибуция неудач не повисала на самокритике.",
+      mot_social:"Тебя мотивирует то, что усилия замечают и ценят, а также дела с дорогими людьми: это связь достижения с социальным признанием и аффилиацией. Одинокий «карьерный голод» для тебя пуст. Совет: выстраивай дела соучастно и с признанием — твоё настоящее топливо. Береги ощущение «мы это сделали вместе».",
+      mot_growth:"Твой двигатель — интерес и развитие: внутренняя мотивация (самодетерминация) и ориентация на мастерство. Если скучно, ты теряешь энергию, а увлечённый — выдаёшь результат, которого не ждал. Совет: не живи «на чистой дисциплине» — проектируй жизнь на новизну и обучение. Монотонность — главный враг.",
+      mot_stable:"Тебя мотивирует стабильность и спокойствие за завтрашний день: преобладает мотив безопасности и избегания неудач (а не риск ради азарта). Это зрелая ценная позиция. Совет: используй стабильный фундамент как базу для развития внутри — спокойствие ради достижения, а не остановки."
+    },
+    en:{
+      crit_soft:"Your inner voice sounds more like a kind mentor — a positive self-concept component and stable self-esteem. You forgive yourself and do not turn a mistake into a verdict. The main risk: sometimes you are not demanding enough and can put off growth. You tend to treat mistakes as experience — keep that balance.",
+      crit_mid:"You have a working balance: the critic keeps standards high, but its tone is harsher than needed. Your self-concept shows a noticeable gap between the 'real me' and the 'ideal me' — that feeds self-criticism. You notice mistakes, learn from them, and mostly forgive yourself. Watch that demand does not turn into exhaustion — self-kindness is productive too.",
+      crit_hard:"Your critic is loud and harsh: a large gap between 'ideal me' and 'real me', noticeable low self-esteem. It keeps you focused, but the price is high: anxiety, a feeling of 'not good enough'. You scold yourself more than you praise. Learn self-support: stop the harsh voice and work to stabilize your self-concept.",
+      rec_physical:"You recover through the body: sleep, movement, walks, physical comfort. This is essentially a coping strategy aimed at physical release of tension. Reset is primarily physical for you. When you sleep little or do not move, everything goes downhill. Tip: plan rest as an important matter, not as 'leftover time'.",
+      rec_emotional:"Your main source of energy is people: emotion-focused coping, where support from your circle lowers tension. Talking it out and being near loved ones helps you. In total isolation you stagnate. Tip: do not wait for burnout — build your 'crew' in advance, but also learn to recover autonomously.",
+      rec_mental:"You recover in silence and solitude: order, analysis, seclusion — a rational, problem-focused coping, coping through reflection. You do not waste energy. Tip: make sure silence is not avoidance but a way to digest the problem — then you come back to people replenished.",
+      mot_goal:"You are driven by a goal and a visible result — a pronounced achievement motivation. You switch on when there is a challenge and a clear direction. 'Just working' without a goal drains you. Tip: set clear, measurable goals and look back at the path — motivation lasts; keep failure attribution from hanging on self-criticism.",
+      mot_social:"You are motivated by noticing and valuing of your efforts, and work with dear people: achievement tied to social recognition and affiliation. An empty 'career hunger' means nothing to you. Tip: build tasks with co-creation and recognition — your true fuel. Keep the feeling of 'we did it together'.",
+      mot_growth:"Your driver is interest and development: intrinsic motivation (self-determination) and mastery orientation. If bored, you lose energy; if engaged, you produce unexpected results. Tip: do not live on 'pure discipline' — design a life of novelty and learning. Routine is your main enemy.",
+      mot_stable:"You are motivated by stability and calm about tomorrow: the safety motive and avoidance of failure prevail (not risk for its own sake). A mature, valuable position. Tip: use the stable foundation as a base for inner growth — calm for achievement, not for stopping."
+    },
+    fr:{
+      crit_soft:"Votre voix intérieure ressemble plutôt à un mentor bienveillant — un composant positif de la conception de soi et une estime de soi stable. Vous vous pardonnez et ne faites pas d'une erreur un verdict. Le principal risque : parfois trop indulgent, vous remettez la croissance à plus tard. Vous traitez les erreurs comme une expérience — gardez cet équilibre.",
+      crit_mid:"Vous avez un équilibre de travail : le critique maintient le niveau, mais son ton est plus dur qu'il ne faudrait. Votre conception de soi montre un écart net entre le « moi réel » et le « moi idéal », ce qui nourrit l'autocritique. Vous remarquez les erreurs, apprenez et vous pardonnez en général. Veillez à ce que l'exigence ne devienne pas de l'épuisement — la douceur envers soi est productive.",
+      crit_hard:"Votre critique est fort et sévère : un grand écart entre le « moi idéal » et le « moi réel », une estime de soi nettement basse. Il vous tient en éveil, mais le prix est élevé : anxiété, sentiment de « pas assez bien ». Vous vous reprochez plus que vous ne vous félicitez. Apprenez l'autosoutien : arrêter la voix dure et stabiliser votre conception de soi.",
+      rec_physical:"Vous récupérez par le corps : sommeil, mouvement, promenades, confort corporel. C'est essentiellement un coping visant la décharge physique de la tension. La remise à zéro est d'abord physique pour vous. Quand vous dormez peu ou ne bougez pas, tout décline. Conseil : planifiez le repos comme une affaire importante, pas comme le « temps restant ».",
+      rec_emotional:"Votre principale source d'énergie, ce sont les gens : un coping centré sur les émotions, où le soutien de l'entourage réduit la tension. Parler et être près de vos proches vous aide. En isolement total, vous vous fanez. Conseil : n'attendez pas le burn-out — constituez votre « équipe » à l'avance, mais apprenez aussi à récupérer en autonomie.",
+      rec_mental:"Vous récupérez dans le silence et la solitude : ordre, analyse, retraite — un coping rationnel, centré sur le problème, par la réflexion. Vous ne gaspillez pas d'énergie. Conseil : veillez à ce que le silence ne soit pas de l'évitement, mais une façon de digérer le problème — vous reviendrez aux gens ressourcé.",
+      mot_goal:"Vous êtes mû par un but et un résultat visible — une motivation de réussite marquée. Vous vous allumez quand il y a un défi et une direction claire. « Travailler juste » sans but vous éteint. Conseil : fixez des objectifs clairs et mesurables et regardez le chemin — la motivation dure ; ne laissez pas l'attribution de l'échec retomber sur l'autocritique.",
+      mot_social:"Vous êtes motivé par la reconnaissance de vos efforts et le travail avec des proches : la réussite liée à la reconnaissance sociale et à l'affiliation. Une « faim de carrière » solitaire ne vous dit rien. Conseil : construisez des projets participatifs avec reconnaissance — votre vrai carburant. Gardez le sentiment du « nous l'avons fait ensemble ».",
+      mot_growth:"Votre moteur est l'intérêt et le développement : motivation intrinsèque (autodétermination) et orientation vers la maîtrise. Si vous vous ennuyez, vous perdez de l'énergie ; si vous êtes engagé, vous surpassez vos attentes. Conseil : ne vivez pas « sur la seule discipline » — concevez une vie de nouveauté et d'apprentissage. La routine est votre ennemi principal.",
+      mot_stable:"Vous êtes motivé par la stabilité et le calme du lendemain : le motif de sécurité et d'évitement de l'échec domine (plutôt que le risque pour le frisson). Une position mature et précieuse. Conseil : servez-vous du socle stable comme base pour grandir intérieurement — le calme pour réussir, pas pour s'arrêter."
+    },
+    es:{
+      crit_soft:"Tu voz interior suena más a un mentor amable — un componente positivo del autoconcepto y una autoestima estable. Te perdonas y no conviertes un error en un veredicto. El riesgo principal: a veces no eres exigente contigo y puedes aplazar el crecimiento. Tratas los errores como experiencia — conserva ese equilibrio.",
+      crit_mid:"Tienes un equilibrio funcional: el crítico mantiene el nivel, pero su tono es más duro de lo necesario. Tu autoconcepto muestra un desfase claro entre el «yo real» y el «yo ideal», que alimenta la autocrítica. Notas los errores, aprendes y te perdonas en general. Cuida que la exigencia no se vuelva agotamiento — la amabilidad contigo también es productiva.",
+      crit_hard:"Tu crítico es fuerte y severo: un gran desfase entre el «yo ideal» y el «yo real», con una autoestima claramente baja. Te mantiene alerta, pero a un precio alto: ansiedad, sensación de «no ser suficiente». Te regañas más de lo que te felicitas. Aprende el autoapoyo: frenar la voz dura y estabilizar tu autoconcepto.",
+      rec_physical:"Te recuperas a través del cuerpo: sueño, movimiento, paseos, comodidad corporal. Es esencialmente un afrontamiento orientado a descargar la tensión físicamente. La recarga es sobre todo física. Cuando duermes poco o no te mueves, todo cuesta. Consejo: planifica el descanso como algo importante, no como el «tiempo que queda».",
+      rec_emotional:"Tu principal fuente de energía son las personas: un afrontamiento centrado en las emociones, donde el apoyo del entorno baja la tensión. Hablarlo y estar junto a los tuyos te ayuda. En el aislamiento total te apagas. Consejo: no esperes el agotamiento — arma tu «equipo» de antemano, pero aprende también a recuperarte en autonomía.",
+      rec_mental:"Te recuperas en silencio y soledad: orden, análisis, retiro — un afrontamiento racional, centrado en el problema, mediante la reflexión. No desperdicias energía. Consejo: cuida que el silencio no sea evitación, sino una forma de digerir el problema — volverás a los demás recargado.",
+      mot_goal:"Te mueve una meta y un resultado visible — una motivación de logro pronunciada. Te enciendes cuando hay reto y dirección clara. «Solo trabajar» sin meta te apaga. Consejo: fija objetivos claros y medibles y mira el camino — la motivación dura; no dejes que la atribución del fracaso cuelgue de la autocrítica.",
+      mot_social:"Te motiva que noten y valoren tus esfuerzos, y el trabajo con los tuyos: el logro unido al reconocimiento social y la afiliación. Un «hambre de carrera» solitario no te dice nada. Consejo: construye proyectos con participación y reconocimiento — tu verdadero combustible. Conserva el «lo hicimos juntos».",
+      mot_growth:"Tu motor es el interés y el desarrollo: motivación intrínseca (autodeterminación) y orientación al dominio. Si te aburres, pierdes energía; si estás enganchado, superas tus propias expectativas. Consejo: no vivas «solo de disciplina» — diseña una vida de novedad y aprendizaje. La rutina es tu peor enemigo.",
+      mot_stable:"Te motiva la estabilidad y la calma del mañana: domina el motivo de seguridad y de evitación del fracaso (no el riesgo por el riesgo). Una postura madura y valiosa. Consejo: usa la base estable para crecer por dentro — la calma para lograr, no para detenerse."
+    }
+  };
+
+  // Recommendations lists per profile (each = array of strings)
+  var REC = {
+    ru:{
+      critSoft:"У тебя низкий уровень самокритики — следи, чтобы это не превращалось в отсутствие обратной связи: ставь внешние критерии оценки, чтобы расти.",
+      critMid:"Твой критик в балансе: используй его как сигнал для корректировки, но не позволяй превращаться в тревожный монолог — отделяй «полезное замечание» от самоедства.",
+      critHard:"Снижай жёсткость внутреннего критика: фиксируй «я реальное» против «я идеального» и смягчай когнитивные искажения — не отождествляй отдельную ошибку с личностью в целом.",
+      critHard2:"Делай «самоподдержку» привычкой: раз в день замечай, что сделал хорошо, — это укрепляет самооценку и эмоционально-оценочный компонент я-концепции.",
+      recPhysical:"Планируй восстановление как часть расписания (телесно-ориентированный копинг): сон, движение и телесный комфорт у тебя — главные ресурсы устойчивости к стрессу.",
+      recEmotional:"Развивай сеть социальной поддержки (социальный копинг): выговориться и почувствовать рядом близких для тебя — ключевой способ совладания, не давай ему засыхать.",
+      recMental:"Держи время наедине с собой (проблемно-ориентированный копинг): уединение и анализ — твой способ переработать стресс, береги право на него.",
+      motGoal:"Корми мотивацию достижения ясными целями и обратной связью; пусть атрибуция неудач будет конструктивной (ситуация/усилие), а не застревает в «я неспособен».",
+      motSocial:"Включай в дела соучастие и признание (потребность в аффилиации) — для тебя это настоящее топливо; балансируй её со способностью работать автономно.",
+      motGrowth:"Проектируй жизнь на новизну и развитие (самодетерминация): интерес — твой двигатель, монотонность — главный враг продуктивности.",
+      motStable:"Используй стабильность как фундамент, а не как тормоз: стремление к безопасности эффективно, если не перекрывает потребность в росте — добавляй умеренные вызовы.",
+      mixed:"Поскольку твой профиль смешанный, выбирай практики из нескольких направлений и отслеживай, что отзывается именно тебе — индивидуальный подбор важнее готового рецепта.",
+      critType:"Тип: ", recLead:"Твой ведущий канал: ", motLead:"Твой ведущий мотиватор: "
+    },
+    en:{
+      critSoft:"Your self-criticism is low — make sure this does not turn into no feedback at all: set external criteria for yourself to keep growing.",
+      critMid:"Your critic is balanced: use it as a signal for correction, but do not let it become an anxious monologue — separate a 'useful remark' from self-flagellation.",
+      critHard:"Lower the harshness of the inner critic: notice the 'real me' against the 'ideal me' and soften cognitive distortions — do not equate a single mistake with your whole person.",
+      critHard2:"Make 'self-support' a habit: once a day notice something you did well — this strengthens self-esteem and the evaluative component of your self-concept.",
+      recPhysical:"Plan recovery as part of your schedule (body-focused coping): sleep, movement and physical comfort are your main resources of stress resilience.",
+      recEmotional:"Build a social support network (social coping): talking it out and feeling your loved ones near is a key way you cope — do not let it wither.",
+      recMental:"Keep time alone (problem-focused coping): seclusion and analysis are your way to process stress — protect your right to it.",
+      motGoal:"Feed achievement motivation with clear goals and feedback; let failure attribution be constructive (situation/effort), not stuck in 'I am incapable'.",
+      motSocial:"Build co-creation and recognition into tasks (need for affiliation) — your true fuel; balance it with the ability to work autonomously.",
+      motGrowth:"Design a life of novelty and development (self-determination): interest is your engine, routine is the main enemy of productivity.",
+      motStable:"Use stability as a foundation, not a brake: the drive for safety works well unless it blocks the need to grow — add moderate challenges.",
+      mixed:"Since your profile is mixed, pick practices from several directions and track what resonates with you — individual selection beats a ready-made recipe.",
+      critType:"Type: ", recLead:"Your leading channel: ", motLead:"Your leading driver: "
+    },
+    fr:{
+      critSoft:"Votre autocritique est faible — veillez à ce qu'elle ne devienne pas une absence totale de retour : fixez des critères externes pour grandir.",
+      critMid:"Votre critique est équilibré : utilisez-le comme signal de correction, mais ne le laissez pas devenir un monologue anxieux — séparez la « remarque utile » de l'autodénigrement.",
+      critHard:"Adoucissez le critique intérieur : repérez le « moi réel » face au « moi idéal » et adoucissez les distorsions cognitives — ne réduisez pas une simple erreur à tout votre être.",
+      critHard2:"Faites de l'« auto-soutien » une habitude : une fois par jour, remarquez ce que vous avez bien fait — cela renforce l'estime de soi et la composante évaluative du concept de soi.",
+      recPhysical:"Planifiez la récupération dans votre agenda (coping centré sur le corps) : sommeil, mouvement et confort corporel sont vos principales ressources face au stress.",
+      recEmotional:"Développez un réseau de soutien social (coping social) : parler et sentir vos proches proches est votre façon clé de composer — ne la laissez pas se flétrir.",
+      recMental:"Gardez du temps seule(e) (coping centré sur le problème) : retraite et analyse sont votre façon de traiter le stress — protégez ce droit.",
+      motGoal:"Nourrissez la motivation de réussite par des buts clairs et du retour ; que l'attribution de l'échec soit constructive (situation/effort), pas coincée dans « je suis incapable ».",
+      motSocial:"Intégrez collaboration et reconnaissance dans vos projets (besoin d'affiliation) — votre vrai carburant ; équilibrez-le avec la capacité à travailler en autonomie.",
+      motGrowth:"Concevez une vie de nouveauté et de développement (autodétermination) : l'intérêt est votre moteur, la routine l'ennemi principal de la productivité.",
+      motStable:"Utilisez la stabilité comme un socle, pas un frein : le besoin de sécurité est efficace s'il ne bloque pas la croissance — ajoutez des défis modérés.",
+      mixed:"Votre profil étant mixte, choisissez des pratiques de plusieurs directions et observez ce qui vous parle — la sélection individuelle vaut mieux qu'une recette toute faite.",
+      critType:"Type : ", recLead:"Votre canal principal : ", motLead:"Votre motivation principale : "
+    },
+    es:{
+      critSoft:"Tu autocrítica es baja: cuida que no se convierta en ausencia total de retroalimentación — fija criterios externos para seguir creciendo.",
+      critMid:"Tu crítico está equilibrado: úsalo como señal para corregir, pero no lo dejes volverse un monólogo de ansiedad — separa la «observación útil» de la autocrítica destructiva.",
+      critHard:"Baja la dureza del crítico interno: nota el «yo real» frente al «yo ideal» y suaviza las distorsiones cognitivas — no reduzcas un error aislado a toda tu persona.",
+      critHard2:"Haz del «autoapoyo» un hábito: una vez al día nota algo que hiciste bien — esto fortalece la autoestima y el componente valorativo del autoconcepto.",
+      recPhysical:"Planifica la recuperación como parte de tu agenda (afrontamiento centrado en el cuerpo): sueño, movimiento y comodidad corporal son tus recursos clave de resiliencia.",
+      recEmotional:"Construye una red de apoyo social (afrontamiento social): hablar y sentir cerca a los tuyos es tu forma clave de lidiar — no la dejes marchitar.",
+      recMental:"Reserva tiempo a solas (afrontamiento centrado en el problema): el retiro y el análisis son tu modo de procesar el estrés — protege ese derecho.",
+      motGoal:"Alimenta la motivación de logro con metas claras y retroalimentación; que la atribución del fracaso sea constructiva (situación/esfuerzo), no atascada en «no soy capaz».",
+      motSocial:"Incorpora participación y reconocimiento (necesidad de afiliación) — tu verdadero combustible; equilibralo con la capacidad de trabajar en autonomía.",
+      motGrowth:"Diseña una vida de novedad y desarrollo (autodeterminación): el interés es tu motor, la rutina el peor enemigo de la productividad.",
+      motStable:"Usa la estabilidad como base, no como freno: el deseo de seguridad funciona si no bloquea el crecimiento — añade retos moderados.",
+      mixed:"Como tu perfil es mixto, elige prácticas de varias direcciones y observa qué te resuena — la selección individual vale más que una receta hecha.",
+      critType:"Tipo: ", recLead:"Tu canal principal: ", motLead:"Tu motivación principal: "
+    }
+  };
+
+  // Self-check comparison texts
+  var GAP = {
+    ru:{exact:"точное совпадение с интуицией",near:"немного расходится с твоим мнением",far:"заметно отличается от твоей самооценки",
+        notChosen:"не выбрана",low:"низкая",mid:"средняя",high:"высокая",
+        names:["Сила внутреннего критика","Способность восстанавливаться","Знание своих мотиваторов"],
+        test:"Тест: ", your:"Твоя оценка: "},
+    en:{exact:"exact match with your intuition",near:"slightly differs from your view",far:"clearly differs from your self-assessnessment",
+        notChosen:"not chosen",low:"low",mid:"medium",high:"high",
+        names:["Inner critic strength","Ability to recover","Knowledge of your drivers"],
+        test:"Test: ", your:"Your estimate: "},
+    fr:{exact:"correspond parfaitement à votre intuition",near:"diffère un peu de votre opinion",far:"diffère nettement de votre auto-évaluation",
+        notChosen:"non choisie",low:"faible",mid:"moyenne",high:"élevée",
+        names:["Force du critique intérieur","Capacité à récupérer","Connaissance de vos moteurs"],
+        test:"Test : ", your:"Votre estimation : "},
+    es:{exact:"coincide exactamente con tu intuición",near:"difiere un poco de tu opinión",far:"difiere claramente de tu autoevaluación",
+        notChosen:"no elegida",low:"baja",mid:"media",high:"alta",
+        names:["Fuerza del crítico interno","Capacidad de recuperación","Conocimiento de tus motores"],
+        test:"Prueba: ", your:"Tu estimación: "}
+  };
+
+  // ============ QUESTIONS database (4 languages) ============
+  // Each question: {b, ax, dir, t:{ru,en,fr,es}}
+  // axes: critic: voice/harsh/forgive; recovery: physical/emotional/mental; motive: goal/social/growth/stable
+var Q_GRAM = {
+    ru:[
+      "Ты долго прокручиваешь в голове свои ошибки, даже мелкие.",
+      "Когда ты делаешь что-то не идеально, ты слышишь внутри резкий упрёк.",
+      "Тебе бывает сложно заснуть, потому что ты снова и снова думаешь о том, что пошло не так.",
+      "После неудачи ты ещё несколько дней сам себя грызёшь.",
+      "Ты часто сравниваешь себя с другими и чувствуешь себя хуже из-за этого.",
+      "У тебя получается быстро отпускать то, что пошло не так.",
+      "Ты требуешь от себя идеального результата.",
+      "Сделать что-то наполовину ты почти не можешь — или всё, или ничего.",
+      "Ты ругаешь себя за то, что не успеваешь столько, сколько планируешь.",
+      "Тебе стыдно просить помощи, потому что «ты должен справляться сам».",
+      "Ты ожидаешь от себя больше, чем от других людей.",
+      "Ты спокойно относишься к тому, что не всё получается с первой попытки.",
+      "Когда ты ошибаешься, ты умеешь себя пожалеть, а не только отругать.",
+      "Ты считаешь, что ошибка — это не приговор, а опыт.",
+      "Ты можешь сказать себе «всё нормально, ты старался».",
+      "К себе ты относишься примерно так же бережно, как к близкому другу.",
+      "Тебе не стыдно иногда ничего не делать.",
+      "Ты уверен, что если перестанешь себя критиковать — совсем расслабишься и ничего не добьёшься.",
+      "Ты принимаешь похвалу с недоверием, считая, что не заслуживаешь этого.",
+      "Для тебя фраза «ну надо постараться» звучит как угроза неудачи, а не как мотивация.",
+      "После тяжёлого дня тебе нужен сон, и ты его сильно бережёшь.",
+      "Спорт или движение — твой главный способ сбросить напряжение.",
+      "Прогулка на свежем воздухе тебя реально «перезагружает».",
+      "Ты восстанавливаешься через телесные удовольствия: еда, душ, отдых в тишине.",
+      "Когда ты на пределе, еда и сон у тебя как раз расстраиваются.",
+      "Тебе помогает выговориться близкому человеку.",
+      "Общение с друзьями заряжает тебя энергией.",
+      "После стресса тебе нужно, чтобы кто-то тебя обнял или поддержал.",
+      "Ты чувствуешь облегчение, когда делишься переживаниями с другими.",
+      "В трудный момент ты предпочитаешь пережить его молча и в одиночку.",
+      "Тебе помогает сесть и разложить проблему по полочкам.",
+      "Список дел и порядок вокруг тебя успокаивают.",
+      "Ты восстанавливаешься через тишину и уединение.",
+      "Тебе нужно время наедине с собой, чтобы прийти в себя.",
+      "Когда ты устаёшь, тебе не помогает анализировать — это только сильнее выматывает.",
+      "Тебе важно, как ты себя чувствуешь физически: можешь быстро заметить, что «выгорел».",
+      "Хобби, музыка или сериал с близкими восстанавливают тебя лучше, чем что-либо ещё.",
+      "Тебе помогает менять деятельность: побыть одному, подумать, почитать.",
+      "Ты часто игнорируешь усталость и дожимаешь до полного истощения.",
+      "Новый коллектив или компания скорее выматывают тебя, чем восстанавливают.",
+      "Ты в лучшей форме, когда перед тобой конкретная цель и виден результат.",
+      "Тебя заводит конкуренция и желание выиграть.",
+      "Ты любишь доводить начатое до конца и закрывать задачи.",
+      "Тебе не очень важны достижения и «галочки», тебе важно другое.",
+      "Для тебя важно, чтобы твою работу замечали и ценили.",
+      "Ты воодушевляешься, когда тебя хвалят и благодарят.",
+      "Ты чувствуешь прилив сил, когда делаешь что-то вместе с теми, кто тебе дорог.",
+      "Тебе безразлично мнение окружающих о тебе.",
+      "Тебя двигает интерес: когда тебе скучно, ты теряешь мотивацию совсем.",
+      "Ты любишь учиться новому и осваивать то, что раньше не умел.",
+      "Для тебя важнее «расти» и развиваться, чем иметь много денег.",
+      "Если в тебе нет вдохновения, никакой список преимуществ тебя не сдвинет.",
+      "Ты готов много работать, если это даёт стабильность и спокойствие за завтрашний день.",
+      "Тебе комфортно, когда есть понятный распорядок и предсказуемость.",
+      "Ты предпочитаешь свободу и непредсказуемость стабильности и рутине.",
+      "Ты бываешь в потоке, когда решаешь сложную задачу, требующую всех твоих сил.",
+      "Ты чувствуешь гордость, когда достигаешь того, что планировал.",
+      "Слишком много общения отнимает у тебя мотивацию, а не даёт её.",
+      "Риски ради острых ощущений тебя скорее пугают, чем привлекают.",
+      "Скучная, но надёжная работа тебя быстро выматывает."
+    ],
+    en:[
+      "You replay your mistakes in your head for a long time, even small ones.",
+      "When you do something less than perfectly, you hear a sharp reproach inside.",
+      "You often find it hard to fall asleep because you keep thinking about what went wrong.",
+      "After a failure you gnaw at yourself for days.",
+      "You often compare yourself with others and feel worse because of it.",
+      "You can let go of what went wrong fairly quickly.",
+      "You demand a perfect result from yourself.",
+      "You can hardly do things halfway — it is all or nothing.",
+      "You scold yourself for not doing as much as you planned.",
+      "You feel ashamed to ask for help, because 'you should cope on your own'.",
+      "You expect more from yourself than from other people.",
+      "You are calm about not getting everything right on the first try.",
+      "When you make a mistake, you can feel sorry for yourself, not only scold yourself.",
+      "You believe a mistake is experience, not a verdict.",
+      "You can tell yourself 'it's okay, you tried'.",
+      "You treat yourself about as gently as you treat a close friend.",
+      "You are not ashamed to do nothing sometimes.",
+      "You are sure that if you stop criticizing yourself, you will slack off and achieve nothing.",
+      "You distrust praise, believing you do not deserve it.",
+      "To you, the phrase 'you should try harder' sounds like a threat of failure, not motivation.",
+      "After a hard day you need sleep and you protect it fiercely.",
+      "Sport or movement is your main way to release tension.",
+      "A walk outdoors really resets you.",
+      "You recover through bodily pleasures: food, a shower, quiet rest.",
+      "When you are at the limit, food and sleep actually fall apart for you.",
+      "Talking it out with a close person helps you.",
+      "Spending time with friends charges you with energy.",
+      "After stress you need someone to hug or support you.",
+      "You feel relief when you share your worries with others.",
+      "In a difficult moment you prefer to go through it silently and alone.",
+      "It helps you to sit down and break the problem into pieces.",
+      "A to-do list and order around you calm you down.",
+      "You recover through silence and solitude.",
+      "You need time alone to get back on your feet.",
+      "When you are tired, analyzing does not help — it only exhausts you more.",
+      "You notice how you feel physically: you can quickly tell you are 'burned out'.",
+      "A hobby, music or a series with loved ones restores you better than anything else.",
+      "Switching activities helps you: being alone, thinking, reading.",
+      "You often ignore fatigue and push yourself until complete exhaustion.",
+      "A new team or company tires you out rather than restores you.",
+      "You are at your best when there is a concrete goal and a visible result.",
+      "Competition and the desire to win excite you.",
+      "You like finishing what you started and closing tasks.",
+      "Achievements and 'checkmarks' are not very important to you; something else matters.",
+      "It is important to you that your work is noticed and valued.",
+      "You are energized when you are praised and thanked.",
+      "You feel a surge of strength when you do something together with people you cherish.",
+      "You do not care what people around you think of you.",
+      "Interest drives you: when you are bored, you lose motivation entirely.",
+      "You love learning new things and mastering what you could not do before.",
+      "For you 'growing' and developing matters more than having a lot of money.",
+      "If you have no inspiration, no list of benefits will move you.",
+      "You are ready to work hard if it brings stability and peace about tomorrow.",
+      "You are comfortable with a clear routine and predictability.",
+      "You prefer freedom and unpredictability over stability and routine.",
+      "You get into flow when solving a hard problem that needs all your strength.",
+      "You feel proud when you achieve what you planned.",
+      "Too much communication drains your motivation rather than gives it.",
+      "Risks for adrenaline rather scare you than attract you.",
+      "A boring but reliable job quickly exhausts you."
+    ],
+    fr:[
+      "Tu repasses longtemps tes erreurs dans ta tête, même les petites.",
+      "Quand tu fais quelque chose de moins que parfait, tu entends un reproche sec en toi.",
+      "Tu as souvent du mal à t'endormir car tu repenses à ce qui a mal tourné.",
+      "Après un échec, tu te ronges pendant plusieurs jours.",
+      "Tu te compares souvent aux autres et tu te sens moins bien à cause de cela.",
+      "Tu arrives assez vite à lâcher ce qui a mal tourné.",
+      "Tu exiges de toi un résultat parfait.",
+      "Tu peux difficilement faire les choses à moitié — tout ou rien.",
+      "Tu te reproches de ne pas en faire autant que prévu.",
+      "Tu as honte de demander de l'aide, car « tu dois te débrouiller seul ».",
+      "Tu attends plus de toi que des autres.",
+      "Tu prends calmement le fait de ne pas tout réussir du premier coup.",
+      "Quand tu fais une erreur, tu sais te plaindre de toi, pas seulement te gronder.",
+      "Tu crois qu'une erreur est une expérience, pas un verdict.",
+      "Tu peux te dire « tout va bien, tu as essayé ».",
+      "Tu te traites à peu près aussi doucement qu'un ami proche.",
+      "Tu n'as pas honte de ne parfois rien faire.",
+      "Tu es sûr que si tu arrêtes de te critiquer, tu te relâcheras et ne réaliseras rien.",
+      "Tu te méfies des compliments, pensant ne pas les mériter.",
+      "Pour toi, la phrase « il faut faire plus d'efforts » sonne comme une menace d'échec, pas une motivation.",
+      "Après une journée éprouvante, le sommeil te manque et tu le protèges.",
+      "Le sport ou l'activité est ton principal moyen de relâcher la tension.",
+      "Une promenade au grand air te « recharge » vraiment.",
+      "Tu récupères par les plaisirs corporels : nourriture, douche, repos au calme.",
+      "Quand tu es à la limite, manger et dormir se dérèglent justement.",
+      "Parler avec un proche t'aide.",
+      "Passer du temps avec des amis te rechargé en énergie.",
+      "Après le stress, tu as besoin que quelqu'un te serre dans ses bras ou te soutienne.",
+      "Tu ressens un soulagement quand tu partages tes soucis avec les autres.",
+      "Dans un moment difficile, tu préfères le traverser en silence et seul.",
+      "T'asseoir et découper le problème en parties t'aide.",
+      "Une liste de tâches et l'ordre autour de toi te calment.",
+      "Tu récupères par le silence et la solitude.",
+      "Tu as besoin de temps seul pour revenir à toi-même.",
+      "Quand tu es fatigué, analyser ne t'aide pas — cela t'épuise davantage.",
+      "Tu sens ton état physique : tu remarques vite que tu « es épuisé ».",
+      "Un hobby, la musique ou une série avec des proches te remettent mieux que tout.",
+      "Changer d'activité t'aide : être seul, réfléchir, lire.",
+      "Tu ignores souvent la fatigue et tu pousses jusqu'à l'épuisement total.",
+      "Une nouvelle équipe ou compagnie t'épuise plutôt qu'elle ne te ressourruit.",
+      "Tu es au meilleur de ta forme quand il y a un but concret et un résultat visible.",
+      "La compétition et le désir de gagner t'excitent.",
+      "Tu aimes mener à bien ce que tu as commencé et clore les tâches.",
+      "Les réussites et les « cases cochées » comptent peu pour toi ; autre chose compte.",
+      "Il est important pour toi que ton travail soit remarqué et valorisé.",
+      "Tu es stimulé quand on te félicite et te remercie.",
+      "Tu ressens un élan de force quand tu fais quelque chose avec les gens qui te sont chers.",
+      "L'opinion des autres sur toi t'indiffère.",
+      "L'intérêt te motive : quand tu t'ennuies, tu perds toute motivation.",
+      "Tu aimes apprendre du nouveau et maîtriser ce que tu ne savais pas faire.",
+      "Pour toi, « grandir » et te développer compte plus qu'avoir beaucoup d'argent.",
+      "Sans inspiration, aucune liste d'avantages ne te fera bouger.",
+      "Tu es prêt à travailler dur si cela apporte stabilité et calme au lendemain.",
+      "Tu es à l'aise avec une routine claire et la prévisibilité.",
+      "Tu préfères la liberté et l'imprévisibilité à la stabilité et à la routine.",
+      "Tu es en flux quand tu résous un problème difficile exigeant toute ta force.",
+      "Tu ressens de la fierté quand tu atteins ce que tu avais prévu.",
+      "Trop de communication épuise ta motivation plutôt qu'elle ne la donne.",
+      "Les risques par adrénaline t'effraient plus qu'ils ne t'attirent.",
+      "Un travail ennuyeux mais fiable t'épuise vite."
+    ],
+    es:[
+      "Repasas mucho tiempo tus errores en la cabeza, incluso los pequeños.",
+      "Cuando haces algo menos que perfecto, escuchas un reproche seco dentro.",
+      "A menudo te cuesta dormir porque das vueltas a lo que salió mal.",
+      "Después de un fracaso te machacas durante días.",
+      "Frecuentemente te comparas con otros y te sientes peor por eso.",
+      "Sueles soltar con bastante rapidez lo que salió mal.",
+      "Exiges de ti un resultado perfecto.",
+      "Casi no puedes hacer las cosas a medias: todo o nada.",
+      "Te regañas por no hacer tanto como planeas.",
+      "Te da vergüenza pedir ayuda, porque «debes arreglártelo solo».",
+      "Esperas más de ti que de los demás.",
+      "Tomas con calma que no todo salga bien a la primera.",
+      "Cuando te equivocas, sabes sentir lástima de ti, no solo regañarte.",
+      "Crees que un error es experiencia, no un veredicto.",
+      "Puedes decirte «está bien, lo intentaste».",
+      "Te tratas casi con tanta delicadeza como a un amigo cercano.",
+      "No te da vergüenza no hacer nada a veces.",
+      "Estas seguro de que si dejas de criticarte, te relajarás y no lograrás nada.",
+      "Desconfías de los elogios, pensando que no los mereces.",
+      "Para ti la frase «debes esforzarte más» suena a amenaza de fracaso, no a motivación.",
+      "Tras un día duro necesitas dormir y lo proteges mucho.",
+      "El deporte o el movimiento es tu principal forma de soltar la tensión.",
+      "Un paseo al aire libre te «recarga» de verdad.",
+      "Te recuperas con placeres corporales: comida, ducha, descanso en silencio.",
+      "Cuando estás al límite, la comida y el sueño se te desordenan justo ahí.",
+      "Hablar con una persona cercana te ayuda.",
+      "Pasar tiempo con amigos te carga de energía.",
+      "Tras el estrés necesitas que alguien te abrace o te apoye.",
+      "Sientes alivio cuando compartes tus preocupaciones con otros.",
+      "En un momento difícil prefieres vivirlo en silencio y a solas.",
+      "Te ayuda sentarte y desglosar el problema.",
+      "Una lista de tareas y el orden a tu alrededor te tranquilizan.",
+      "Te recuperas con el silencio y la soledad.",
+      "Necesitas tiempo a solas para volver a ti.",
+      "Cuando estás cansado, analizar no te ayuda — solo te agota más.",
+      "Notas tu estado físico: puedes detectar pronto que estás «quemado».",
+      "Un hobby, la música o una serie con los tuyos te recuperan más que nada.",
+      "Cambiar de actividad te ayuda: estar solo, pensar, leer.",
+      "Muchas veces ignoras el cansancio y te empujas hasta el agotamiento total.",
+      "Un equipo o compañía nueva te agota más de lo que te recupera.",
+      "Estás en tu mejor forma cuando hay una meta concreta y un resultado visible.",
+      "La competición y el deseo de ganar te emocionan.",
+      "Te gusta terminar lo que empiezas y cerrar tareas.",
+      "Los logros y las «palomitas» te importan poco; otra cosa importa.",
+      "Para ti importa que tu trabajo se note y se valore.",
+      "Te entusiasmas cuando te elogian y te agradecen.",
+      "Sientes un empujón de fuerza cuando haces algo con la gente que quieres.",
+      "Te da igual la opinión de quienes te rodean.",
+      "Te mueve el interés: cuando te aburres, pierdes toda la motivación.",
+      "Te encanta aprender cosas nuevas y dominar lo que antes no sabías.",
+      "Para ti «crecer» y desarrollarte importa más que tener mucho dinero.",
+      "Si no hay inspiración, ninguna lista de ventajas te moverá.",
+      "Estás listo para trabajar duro si da estabilidad y calma sobre el mañana.",
+      "Te sientes cómodo con una rutina clara y la previsibilidad.",
+      "Prefieres la libertad y la imprevisibilidad a la estabilidad y la rutina.",
+      "Entras en flujo al resolver un problema difícil que exige toda tu fuerza.",
+      "Sientes orgullo cuando logras lo que habías planeado.",
+      "Demasiada comunicación te quita motivación antes que darla.",
+      "Los riesgos por la adrenalina te asustan más de lo que te atraen.",
+      "Un trabajo aburrido pero fiable te agota rápido."
+    ]
+  };
+
+  // Шкала социальной желательности: вопросы, где "идеальный" ответ очевиден.
+  // Согласие с ними (высокий балл по Ликерту) повышает SD-score.
+  var SD_GRAM = {
+    ru:[
+      "Я никогда не опаздываю.",
+      "Я никогда не ловлю себя на том, что слушаю кого-то невнимательно.",
+      "Я всегда рад выполнить любую просьбу, даже самую неудобную.",
+      "Мне никогда не бывает лень делать то, что нужно.",
+      "Я всегда поступаю правильно, даже когда никто не видит.",
+      "Я ни разу в жизни не сказал ничего, о чём бы пожалел."
+    ],
+    en:[
+      "I am never late.",
+      "I never catch myself listening to someone inattentively.",
+      "I am always happy to fulfil any request, even the most inconvenient.",
+      "I am never too lazy to do what needs to be done.",
+      "I always do the right thing, even when nobody is watching.",
+      "I have never in my life said anything I regretted."
+    ],
+    fr:[
+      "Je ne suis jamais en retard.",
+      "Je ne me surprends jamais à écouter quelqu'un sans attention.",
+      "Je suis toujours heureux de satisfaire toute demande, même la plus dérangeante.",
+      "Il ne m'arrive jamais d'être trop paresseux pour faire ce qu'il faut.",
+      "J'agis toujours bien, même quand personne ne me voit.",
+      "Je n'ai jamais dit de ma vie quelque chose que j'ai regretté."
+    ],
+    es:[
+      "Nunca llego tarde.",
+      "Nunca me sorprendo escuchando a alguien sin atención.",
+      "Siempre estoy contento de cumplir cualquier petición, incluso la más incómoda.",
+      "Nunca me da demasiada pereza hacer lo que hay que hacer.",
+      "Siempre hago lo correcto, aunque nadie me vea.",
+      "En mi vida nunca he dicho algo que lamentara."
+    ]
+  };
+  var SD_N = 6; // по столько вопросов в каждом языке (совпадает с длиной массивов)
+
+  // Structure for 60 questions: [block, axis, dir] repeated in order matching Q_GRAM
+  var Q_META = [];
+  (function(){
+    var rec=[];
+    // helper
+    function push(b,ax,dir){ rec.push([b,ax,dir]); }
+    // critic (20)
+    for(var i=0;i<5;i++){ push("critic","voice",1); }
+    push("critic","voice",-1);
+    for(i=0;i<5;i++){ push("critic","harsh",1); }
+    push("critic","harsh",-1);
+    for(i=0;i<5;i++){ push("critic","forgive",1); }
+    push("critic","forgive",-1);
+    push("critic","voice",1);
+    push("critic","harsh",1);
+    // recovery (20)
+    for(i=0;i<4;i++){ push("recovery","physical",1); }
+    push("recovery","physical",-1);
+    for(i=0;i<4;i++){ push("recovery","emotional",1); }
+    push("recovery","emotional",-1);
+    for(i=0;i<4;i++){ push("recovery","mental",1); }
+    push("recovery","mental",-1);
+    push("recovery","physical",1);
+    push("recovery","emotional",1);
+    push("recovery","mental",1);
+    push("recovery","physical",-1);
+    push("recovery","emotional",-1);
+    // motive (20)
+    for(i=0;i<3;i++){ push("motive","goal",1); }
+    push("motive","goal",-1);
+    for(i=0;i<3;i++){ push("motive","social",1); }
+    push("motive","social",-1);
+    for(i=0;i<3;i++){ push("motive","growth",1); }
+    push("motive","growth",-1);
+    for(i=0;i<2;i++){ push("motive","stable",1); }
+    push("motive","stable",-1);
+    push("motive","growth",1);
+    push("motive","goal",1);
+    push("motive","social",-1);
+    push("motive","stable",1);
+    push("motive","stable",-1);
+    Q_META = rec;
+  })();
+
+  // ============ SELF / OPEN / METAPHOR (4 languages) ============
+  var SELF = {
+    ru:[
+      "Насколько силён твой внутренний критик, по твоим ощущениям?",
+      "Через что ты, по твоему мнению, в основном восстанавливаешься?",
+      "Насколько ты «заводишься» реальными мотиваторами, а не внешним давлением?"
+    ],
+    en:[
+      "How strong is your inner critic, in your own feeling?",
+      "Through what do you think you mostly recover?",
+      "How much do you get going by real motivators rather than external pressure?"
+    ],
+    fr:[
+      "À quel point votre critique intérieur est-il fort, selon vous ?",
+      "Par quoi, selon vous, vous récupérez le plus ?",
+      "Dans quelle mesure êtes-vous stimulé par de vrais moteurs, plutôt que par la pression extérieure ?"
+    ],
+    es:[
+      "¿Qué tan fuerte es tu crítico interno, según tu sentir?",
+      "¿A través de qué crees que te recuperas sobre todo?",
+      "¿Cuánto te encienden los motivadores reales y no la presión externa?"
+    ]
+  };
+
+  var SELF_OPT = {
+    ru:["Оценка: почти нет (0–3)","Оценка: средне (4–6)","Оценка: сильно (7–10)"],
+    en:["Estimate: almost none (0–3)","Estimate: medium (4–6)","Estimate: strong (7–10)"],
+    fr:["Estimation : presque rien (0–3)","Estimation : moyenne (4–6)","Estimation : forte (7–10)"],
+    es:["Estimación: casi nada (0–3)","Estimación: media (4–6)","Estimación: fuerte (7–10)"]
+  };
+
+  var OPEN = {
+    ru:[
+      "В какой ситуации твой внутренний критик звучит особенно громко? Что он обычно говорит?",
+      "Что для тебя чаще всего оказывается настоящей «перезагрузкой», даже если это не принято считать отдыхом?",
+      "О каком достижении или деле ты говоришь «это было по-настоящему моё» и почему?"
+    ],
+    en:[
+      "In which situation is your inner critic especially loud? What does it usually say?",
+      "What most often turns out to be a real 'reset' for you, even if it is not usually considered rest?",
+      "Which achievement or work do you call 'truly mine' and why?"
+    ],
+    fr:[
+      "Dans quelle situation votre critique intérieur est-il particulièrement fort ? Que dit-il d'habitude ?",
+      "Qu'est-ce qui se révèle le plus souvent une vraie « remise à zéro » pour vous, même si ce n'est pas considéré comme du repos ?",
+      "Quelle réussite ou activité appelez-vous « vraiment la mienne » et pourquoi ?"
+    ],
+    es:[
+      "¿En qué situación tu crítico interno se oye especialmente fuerte? ¿Qué suele decir?",
+      "¿Qué suele resultar un verdadero «reinicio» para ti, aunque no se considere descanso?",
+      "¿Qué logro o trabajo llamas «verdaderamente mío» y por qué?"
+    ]
+  };
+
+  // metaphors: q + options {t,label}
+  var METAPHOR = {
+    ru:[
+      {q:"Если представить твой внутренний критик как человека за рабочим столом — кто он?", options:[
+        {t:"boss",label:"Строгий начальник, вечно недовольный качеством"},
+        {t:"coach",label:"Требовательный, но поддерживающий тренер"},
+        {t:"talkshow",label:"Едкий комментатор, комментирующий каждое действие"},
+        {t:"landlord",label:"Хмурый консьерж: пустит в дом, но начнёт ныть"}]},
+      {q:"После сильного стресса ты —…", options:[
+        {t:"cat",label:"Кот: найти самый тёплый угол и лежать, пока не отпустит"},
+        {t:"dog",label:"Пёс: побегать, выговориться, прижаться к своим"},
+        {t:"owl",label:"Сова: улететь в темноту и переосмыслить всё в тишине"},
+        {t:"hedgehog",label:"Ёж: свернуться в клубок и никого не подпускать, пока не остыну"}]},
+      {q:"Твоя мотивация — как топливо. Какое оно у тебя?", options:[
+        {t:"avgas",label:"Быстрая горящая смесь — ярко вспыхивает и быстро заканчивается"},
+        {t:"diesel",label:"Дизель: закипает не сразу, но везёт долго и надёжно"},
+        {t:"solar",label:"Солнечные батареи: работаю, пока есть свет/интерес, без него — ноль"},
+        {t:"hybrid",label:"Гибрид: подключаюсь то к одному, то к другому источнику"}]}
+    ],
+    en:[
+      {q:"If your inner critic were a person at a desk, who would it be?", options:[
+        {t:"boss",label:"A strict boss, never satisfied with quality"},
+        {t:"coach",label:"A demanding but supportive coach"},
+        {t:"talkshow",label:"A caustic commentator narrating your every move"},
+        {t:"landlord",label:"A grumpy concierge: lets you in but keeps nagging"}]},
+      {q:"After strong stress you are…", options:[
+        {t:"cat",label:"A cat: find the warmest corner and lie until it lets go"},
+        {t:"dog",label:"A dog: run, talk it out, cuddle with your people"},
+        {t:"owl",label:"An owl: fly into the dark and rethink everything in silence"},
+        {t:"hedgehog",label:"A hedgehog: curl into a ball and keep everyone out until you cool down"}]},
+      {q:"Your motivation is like fuel. Which kind is yours?", options:[
+        {t:"avgas",label:"Fast-burning mix — flares up bright and ends quickly"},
+        {t:"diesel",label:"Diesel: heats up late but carries long and reliably"},
+        {t:"solar",label:"Solar panels: work while there is light/interest, otherwise zero"},
+        {t:"hybrid",label:"Hybrid: switch between sources"}]}
+    ],
+    fr:[
+      {q:"Si votre critique intérieur était une personne à son bureau, qui serait-ce ?", options:[
+        {t:"boss",label:"Un chef strict, jamais satisfait de la qualité"},
+        {t:"coach",label:"Un entraîneur exigeant mais soutenant"},
+        {t:"talkshow",label:"Un commentateur caustique commentant chacun de vos gestes"},
+        {t:"landlord",label:"Un concierge bougon : vous laisse entrer mais se plaint"}]},
+      {q:"Après un fort stress, vous êtes…", options:[
+        {t:"cat",label:"Un chat : trouver le coin le plus doux et rester couché jusqu'à ce que cela passe"},
+        {t:"dog",label:"Un chien : courir, parler, se blottir contre les siens"},
+        {t:"owl",label:"Une chouette : s'envoler dans le noir et repenser tout en silence"},
+        {t:"hedgehog",label:"Un hérisson : se rouler en boule et n'approcher personne jusqu'à refroidir"}]},
+      {q:"Votre motivation est un carburant. Lequel est le vôtre ?", options:[
+        {t:"avgas",label:"Un mélange qui brûle vite — s'allume et s'épuise rapidement"},
+        {t:"diesel",label:"Le diesel : chauffe tard mais transporte longtemps et sûrement"},
+        {t:"solar",label:"Panneaux solaires : fonctionnent avec la lumière/l'intérêt, sinon zéro"},
+        {t:"hybrid",label:"Hybride : je me branche tantôt à une source, tantôt à une autre"}]}
+    ],
+    es:[
+      {q:"Si tu crítico interno fuera una persona en su escritorio, ¿quién sería?", options:[
+        {t:"boss",label:"Un jefe estricto, nunca satisfecho con la calidad"},
+        {t:"coach",label:"Un entrenador exigente pero que apoya"},
+        {t:"talkshow",label:"Un comentarista ácido que narra cada movimiento"},
+        {t:"landlord",label:"Un portero gruñón: te deja entrar pero empieza a quejarse"}]},
+      {q:"Tras un estrés fuerte, eres…", options:[
+        {t:"cat",label:"Un gato: buscar el rincón más cálido y quedarse hasta que pase"},
+        {t:"dog",label:"Un perro: correr, desahogarte, abrazarte a los tuyos"},
+        {t:"owl",label:"Un búho: volar a la oscuridad y repensarlo todo en silencio"},
+        {t:"hedgehog",label:"Un erizo: hacerte una bola y no dejar entrar a nadie hasta enfriarte"}]},
+      {q:"Tu motivación es como un combustible. ¿Cuál es el tuyo?", options:[
+        {t:"avgas",label:"Mezcla que arde rápido: se enciende fuerte y se acaba pronto"},
+        {t:"diesel",label:"Diésel: tarda en calentarse pero lleva mucho y con fiabilidad"},
+        {t:"solar",label:"Paneles solares: funciono con luz/interés, sin eso, cero"},
+        {t:"hybrid",label:"Híbrido: me conecto ora a una fuente, ora a otra"}]}
+    ]
+  };
+
+  var META_TEXT = {
+    ru:{boss:"Критик — строгий начальник: идеально не бывает, найдёт, где придраться. Высокая планка, но риск выгорания от «недостаточно хорошо».",
+      coach:"Критик — тренер: требователен, но заботится о результате и не роняет. Здоровый тип внутренней опоры — строгость осмысленная и поддерживающая.",
+      talkshow:"Критик — едкий комментатор: громко и остро комментирует всё, что ты делаешь. Это ум, обернувшийся против тебя — научи его быть в твоей команде.",
+      landlord:"Критик — хмурый консьерж: впускает, но фонит недовольством. Усталость от фонового ворчания, которое ты почти перестал замечать.",
+      cat:"Ты восстанавливаешься, как кот: тепло, тишина и комфорт — пока не отпустит. Тело и уют — твой главный источник сил.",
+      dog:"Ты восстанавливаешься, как пёс: движение, общение и близкие. Тебе легче, когда рядом те, кто тебя любит.",
+      owl:"Ты восстанавливаешься, как сова: отделяешься и в тишине пересобираешь себя. Уединение — не побег, а способ прийти в себя.",
+      hedgehog:"Ты восстанавливаешься, как ёж: сворачиваешься и никого не подпускаешь, пока не остынешь. Главное — не застрять в колючках, когда пора снова быть с людьми.",
+      avgas:"Мотивация — быстрая горящая смесь: ярко вспыхивает и быстро гаснет. Умеешь зажигаться, но важно ловить пики и успевать главное.",
+      diesel:"Мотивация — дизель: заводится не сразу, зато везёт долго и стабильно на больших дистанциях. Создан для марафонов.",
+      solar:"Мотивация — солнечные батареи: работает, пока есть внутренний свет и интерес. Важно находить смысл в деле.",
+      hybrid:"Мотивация — гибрид: умеешь подключаться к разным источникам. Гибкость — сила, но следи, чтобы «топливо» было."},
+    en:{boss:"A strict boss: nothing is ever perfect, always something to nitpick. A high bar, but the risk of burnout from 'not good enough'.",
+      coach:"A coach: demanding but cares about results, does not put you down. A healthy inner support — meaningful, supportive strictness.",
+      talkshow:"A caustic commentator: loudly and sharply narrates everything you do. A mind turned against you — teach it to be on your team.",
+      landlord:"A grumpy concierge: lets you in but hums with dissatisfaction. Fatigue from background grumbling you almost stopped noticing.",
+      cat:"You recover like a cat: warmth, silence, comfort — until it lets go. Body and cosiness are your main source of strength.",
+      dog:"You recover like a dog: movement, company and loved ones. It is easier when those who love you are near.",
+      owl:"You recover like an owl: you detach and reassemble yourself in silence. Solitude is not escape, it is how you come back to yourself.",
+      hedgehog:"You recover like a hedgehog: you curl up and keep everyone out until you cool down. Just do not stay in the spines when it is time to be with people again.",
+      avgas:"Your motivation is fast-burning fuel: flares bright and fades fast. You know how to ignite, but catch the peaks and do the important things.",
+      diesel:"Your motivation is diesel: starts slowly but carries long and steadily over long distances. Made for marathons.",
+      solar:"Your motivation is solar panels: works while there is inner light and interest. Find meaning in the work.",
+      hybrid:"Your motivation is hybrid: you connect to different sources. Flexibility is strength, but make sure there is 'fuel'."},
+    fr:{boss:"Un chef strict : rien n'est jamais parfait, il trouve toujours à redire. Une barre haute, mais risque d'épuisement du « pas assez bien ».",
+      coach:"Un entraîneur : exigeant mais soucieux du résultat, il ne vous rabaisse pas. Un soutien intérieur sain — une rigueur réfléchie et soutenante.",
+      talkshow:"Un commentateur caustique : commente fort et vivement tout ce que vous faites. Un esprit retourné contre vous — apprenez-lui à être dans votre équipe.",
+      landlord:"Un concierge bougon : vous laisse entrer mais ronchonne. Fatigue d'un grognement de fond que vous ne remarquiez presque plus.",
+      cat:"Vous récupérez comme un chat : chaleur, silence, confort — jusqu'à ce que cela passe. Le corps et le cocon sont votre principale force.",
+      dog:"Vous récupérez comme un chien : mouvement, compagnie et proches. C'est plus facile quand ceux qui vous aiment sont proches.",
+      owl:"Vous récupérez comme une chouette : vous vous détachez et vous ressaisissez en silence. La solitude n'est pas une fuite, c'est votre façon de revenir à vous.",
+      hedgehog:"Vous récupérez comme un hérisson : vous vous roulez et n'approchez personne jusqu'à refroidir. Évitez de rester dans les pics quand il est temps d'être avec les gens.",
+      avgas:"La motivation est un mélange rapide : s'allume vivement et s'éteint vite. Vous savez vous enflammer, mais saisissez les pics pour faire l'essentiel.",
+      diesel:"La motivation est du diesel : démarre tard mais transporte longtemps et sûrement. Fait pour les marathons.",
+      solar:"La motivation est des panneaux solaires : fonctionne avec la lumière intérieure et l'intérêt. Trouvez du sens au travail.",
+      hybrid:"La motivation est hybride : vous vous branchez à différentes sources. La flexibilité est une force, mais veillez à avoir du « carburant »."},
+    es:{boss:"Un jefe estricto: nada es perfecto, siempre encuentra algo que criticar. Una barra alta, pero riesgo de quemarte por el «no es suficiente».",
+      coach:"Un entrenador: exigente pero cuida el resultado, no te humilla. Un apoyo interno sano — una exigencia reflexiva y que sostiene.",
+      talkshow:"Un comentarista ácido: comenta fuerte y agudo todo lo que haces. Una mente vuelta contra ti — enséñale a estar en tu equipo.",
+      landlord:"Un portero gruñón: te deja entrar pero suena a queja. Cansancio de un murmullo de fondo que casi dejaste de notar.",
+      cat:"Te recuperas como un gato: calor, silencio, comodidad — hasta que pase. El cuerpo y el hogar son tu principal fuerza.",
+      dog:"Te recuperas como un perro: movimiento, compañía y los tuyos. Más fácil cuando cerca están los que te quieren.",
+      owl:"Te recuperas como un búho: te separas y te reconstruyes en silencio. La soledad no es huida, es tu forma de volver a ti.",
+      hedgehog:"Te recuperas como un erizo: te haces bola y no dejas entrar a nadie hasta enfriarte. No te quedes en las púas cuando toque volver con la gente.",
+      avgas:"Tu motivación es una mezcla de combustión rápida: se enciende fuerte y se acaba pronto. Sabes encenderte, pero atrapa los picos y haz lo importante.",
+      diesel:"Tu motivación es diésel: tarda en arrancar pero lleva mucho y de forma estable a largo plazo. Hecho para maratones.",
+      solar:"Tu motivación son paneles solares: funciona con luz interior e interés. Encuentra sentido al trabajo.",
+      hybrid:"Tu motivación es híbrida: te conectas a distintas fuentes. La flexibilidad es fuerza, pero vigila que haya «combustible»."}
+  };
+
+  // ============ APP STATE ============
+  var LANG = "ru";
+  var USERNAME = "";
+  var current = 0;
+  var answers = {};
+  var STEPS = [];
+  (function buildSteps(){
+    for(var i=0;i<Q_GRAM.ru.length;i++){ STEPS.push({type:"main", q:i}); }
+    for(var i=0;i<SD_GRAM.ru.length;i++){ STEPS.push({type:"sd", q:i}); }
+    for(var i=0;i<SELF.ru.length;i++){ STEPS.push({type:"self", q:i}); }
+    for(var i=0;i<OPEN.ru.length;i++){ STEPS.push({type:"open", q:i}); }
+    for(var i=0;i<METAPHOR.ru.length;i++){ STEPS.push({type:"meta", q:i}); }
+  })();
+  var TOTAL_STEPS = STEPS.length;
+
+  var screens = {
+    start: document.getElementById("screen-start"),
+    quiz: document.getElementById("screen-quiz"),
+    result: document.getElementById("screen-result")
+  };
+
+  function show(name){
+    for(var k in screens){ screens[k].classList.remove("active"); }
+    screens[name].classList.add("active");
+    window.scrollTo(0,0);
+  }
+
+  // ============ I18N helpers ============
+  function t(key){ return UI[LANG][key]; }
+  function qText(idx){ return Q_GRAM[LANG][idx]; }
+  function sdText(idx){ return SD_GRAM[LANG][idx]; }
+  function qTextAddressed(idx){
+    var t=qText(idx);
+    var nm=USERNAME||"";
+    return nm? (nm+", "+t) : t;
+  }
+  function sdTextAddressed(idx){
+    var t=sdText(idx);
+    var nm=USERNAME||"";
+    return nm? (nm+", "+t) : t;
+  }
+
+  // Apply static i18n texts in markup ([data-i18n]) and re-render dynamic
+  function applyLang(){
+    var els = document.querySelectorAll("[data-i18n]");
+    els.forEach(function(el){
+      var key = el.getAttribute("data-i18n");
+      if(UI[LANG][key] !== undefined){ el.innerHTML = UI[LANG][key]; }
+    });
+    // re-render vars
+    document.querySelectorAll("[data-var]").forEach(function(el){
+      var v = el.getAttribute("data-var");
+      if(v==="qnum"){ el.textContent = (current+1); }
+      else if(v==="qtotal"){ el.textContent = TOTAL_STEPS; }
+    });
+    // if in quiz, re-render current step; if in result, re-render result
+    if(screens.quiz.classList.contains("active")){ renderStep(); }
+    if(screens.result.classList.contains("active")){
+      renderResult();
+      var rep=document.getElementById("send-report");
+      if(rep && !rep.hidden){ rep.textContent=buildReport(); }
+    }
+    document.documentElement.lang = LANG;
+  }
+
+  function buildQCountHTML(){
+    var tpl = UI[LANG].qcount;
+    return tpl.replace('data-var="qnum"', 'data-var="qnum"').replace('data-var="qtotal"','data-var="qtotal"');
+  }
+
+  function updateQProgress(){
+    var box = document.querySelector(".q-count");
+    box.setAttribute("data-var-count","1");
+    var tpl = UI[LANG].qcount;
+    box.innerHTML = tpl;
+    box.querySelector('[data-var="qnum"]').textContent = current+1;
+    box.querySelector('[data-var="qtotal"]').textContent = TOTAL_STEPS;
+    var pct = (current / TOTAL_STEPS * 100);
+    document.getElementById("progress-bar").style.width = pct + "%";
+  }
+
+  // ============ RENDER STEP ============
+  function badgeFor(st){
+    if(st.type==="main"){ var m=Q_META[st.q]; return m[0]==="critic"?t("badgeCritic"):(m[0]==="recovery"?t("badgeRecovery"):t("badgeMotive")); }
+    if(st.type==="sd"){ return t("sdBadge"); }
+    if(st.type==="self"){ return t("selfBadge"); }
+    if(st.type==="open"){ return t("openBadge"); }
+    return t("metaBadge");
+  }
+
+  function checkNextEnabled(){
+    var st = STEPS[current];
+    var done=false;
+    if(st.type==="main"){ done=!!(answers[st.q]&&answers[st.q].value); }
+    else if(st.type==="sd"){ done=!!(answers["sd"+st.q]&&answers["sd"+st.q].value); }
+    else if(st.type==="self"){ done=!!(answers["s"+st.q]); }
+    else if(st.type==="open"){ done=true; }
+    else { done=!!(answers["m"+st.q]); }
+    document.getElementById("btn-next").disabled = !done;
+  }
+
+  function renderStep(){
+    var st = STEPS[current];
+    document.getElementById("block-badge").textContent = badgeFor(st);
+    updateQProgress();
+    document.getElementById("btn-prev").style.visibility = (current===0)?"hidden":"visible";
+    var input = document.getElementById("q-input");
+    input.innerHTML="";
+    var q = document.getElementById("q-text");
+
+    if(st.type==="main"){
+      q.textContent = qTextAddressed(st.q);
+      var div=document.createElement("div"); div.className="likert";
+      var row=document.createElement("div"); row.className="lrow";
+      var labels = UI[LANG].likert;
+      for(var v=1;v<=5;v++){
+        (function(vv){
+          var lab=document.createElement("label");
+          var inp=document.createElement("input");
+          inp.type="radio"; inp.name="likert"; inp.value=vv; inp.id="l-"+current+"-"+vv;
+          if(answers[st.q]&&answers[st.q].value===vv){ inp.checked=true; }
+          inp.addEventListener("change", function(){
+            answers[st.q]={value:vv, ax:Q_META[st.q][1], dir:Q_META[st.q][2]};
+            checkNextEnabled();
+          });
+          var key=document.createElement("span"); key.className="lkey";
+          var num=document.createElement("span"); num.className="num"; num.textContent=vv;
+          key.appendChild(num); key.appendChild(document.createTextNode(labels[vv-1]));
+          lab.appendChild(inp); lab.appendChild(key);
+          row.appendChild(lab);
+        })(v);
+      }
+      div.appendChild(row);
+      var scale=document.createElement("div"); scale.className="lscale";
+      var a=document.createElement("span"); a.textContent=UI[LANG].likL;
+      var b=document.createElement("span"); b.textContent=UI[LANG].likR;
+      scale.appendChild(a); scale.appendChild(b);
+      div.appendChild(scale);
+      input.appendChild(div);
+    }
+    else if(st.type==="sd"){
+      q.textContent = sdTextAddressed(st.q);
+      var div=document.createElement("div"); div.className="likert";
+      var row=document.createElement("div"); row.className="lrow";
+      var labels = UI[LANG].likert;
+      for(var v=1;v<=5;v++){
+        (function(vv){
+          var lab=document.createElement("label");
+          var inp=document.createElement("input");
+          inp.type="radio"; inp.name="likert"; inp.value=vv; inp.id="l-"+current+"-"+vv;
+          if(answers["sd"+st.q]&&answers["sd"+st.q].value===vv){ inp.checked=true; }
+          inp.addEventListener("change", function(){
+            answers["sd"+st.q]={value:vv};
+            checkNextEnabled();
+          });
+          var key=document.createElement("span"); key.className="lkey";
+          var num=document.createElement("span"); num.className="num"; num.textContent=vv;
+          key.appendChild(num); key.appendChild(document.createTextNode(labels[vv-1]));
+          lab.appendChild(inp); lab.appendChild(key);
+          row.appendChild(lab);
+        })(v);
+      }
+      div.appendChild(row);
+      var scale=document.createElement("div"); scale.className="lscale";
+      var a=document.createElement("span"); a.textContent=UI[LANG].likL;
+      var b=document.createElement("span"); b.textContent=UI[LANG].likR;
+      scale.appendChild(a); scale.appendChild(b);
+      div.appendChild(scale);
+      input.appendChild(div);
+    }
+    else if(st.type==="self"){
+      q.textContent = SELF[LANG][st.q];
+      var grid=document.createElement("div"); grid.className="opt-grid";
+      var opts = UI[LANG].selfOpt || SELF_OPT[LANG];
+      for(var oi=0; oi<3; oi++){
+        (function(oi){
+          var lab=document.createElement("label"); lab.className="opt";
+          var inp=document.createElement("input"); inp.type="radio"; inp.name="self"; inp.value=oi;
+          inp.id="self-"+st.q+"-"+oi;
+          if(answers["s"+st.q]&&answers["s"+st.q].value===oi){ inp.checked=true; }
+          inp.addEventListener("change", function(){ answers["s"+st.q]={value:oi}; checkNextEnabled(); });
+          var sp=document.createElement("span"); sp.className="txt"; sp.textContent=opts[oi];
+          lab.appendChild(inp); lab.appendChild(sp);
+          grid.appendChild(lab);
+        })(oi);
+      }
+      input.appendChild(grid);
+    }
+    else if(st.type==="open"){
+      q.textContent = OPEN[LANG][st.q];
+      var lbl=document.createElement("label"); lbl.className="field-label"; lbl.textContent=t("openLabel");
+      input.appendChild(lbl);
+      var ta=document.createElement("textarea"); ta.rows=3; ta.maxLength=500;
+      ta.placeholder=t("openPh");
+      ta.id="open-"+st.q;
+      if(answers["o"+st.q]){ ta.value=answers["o"+st.q].value; }
+      ta.addEventListener("input", function(){ answers["o"+st.q]={value:ta.value.trim()}; });
+      input.appendChild(ta);
+      var hi=document.createElement("p"); hi.className="hint"; hi.textContent=t("openHint");
+      input.appendChild(hi);
+    }
+    else { // meta
+      var mm = METAPHOR[LANG][st.q];
+      q.textContent = mm.q;
+      var grid=document.createElement("div"); grid.className="opt-grid";
+      mm.options.forEach(function(o){
+        var lab=document.createElement("label"); lab.className="opt";
+        var inp=document.createElement("input"); inp.type="radio"; inp.name="meta"; inp.value=o.t;
+        inp.id="meta-"+st.q+"-"+o.t;
+        if(answers["m"+st.q]&&answers["m"+st.q].value===o.t){ inp.checked=true; }
+        inp.addEventListener("change", function(){ answers["m"+st.q]={value:o.t}; checkNextEnabled(); });
+        var sp=document.createElement("span"); sp.className="txt"; sp.textContent=o.label;
+        lab.appendChild(inp); lab.appendChild(sp);
+        grid.appendChild(lab);
+      });
+      input.appendChild(grid);
+    }
+    checkNextEnabled();
+  }
+
+  function nextStep(){
+    if(current < TOTAL_STEPS-1){ current++; renderStep(); }
+    else { renderResult(); show("result"); }
+  }
+  function prevStep(){
+    if(current>0){ current--; renderStep(); }
+  }
+
+  // ============ SCORING ============
+  function axisSums(){
+    var sums={};
+    Q_META.forEach(function(m, idx){
+      var a=answers[idx]; if(!a) return;
+      var key=m[0]+"::"+m[1];
+      sums[key]=sums[key]||{sum:0,n:0};
+      var agree=6-a.value;
+      if(m[2]===-1){ agree=6-agree; }
+      sums[key].sum+=agree; sums[key].n++;
+    });
+    var res={};
+    for(var k in sums){
+      var s=sums[k];
+      var pct=(s.sum - s.n)/((s.n*5) - s.n)*100;
+      res[k]=Math.round(pct);
+    }
+    return res;
+  }
+
+  // Социальная желательность: чем выше, тем больше человек "соц. желательных" ответов.
+  // Вопросы SD лежат в answers["sd"+i]. Согласие (низкий v) увеличивает склонность.
+  function sdScore(){
+    var n=SD_N, sum=0, answered=0;
+    for(var i=0;i<n;i++){
+      var a=answers["sd"+i];
+      if(a && a.value){ answered++; sum += (6 - a.value); } // agree=5 ... disagree=1
+    }
+    if(answered===0){ return {pct:0, answered:0}; }
+    // pct 0..100, где 100 = максимум соц. желательных ответов
+    var raw=(sum/answered - 1)/4*100; // 1..5 -> 0..100
+    return {pct:Math.round(raw), answered:answered};
+  }
+
+  function criticFrom(ax){
+    var voice=ax["critic::voice"]||0, harsh=ax["critic::harsh"]||0, forgive=ax["critic::forgive"]||0;
+    return {severity:Math.round(voice*0.55+harsh*0.45), voice:voice, harsh:harsh, forgive:forgive};
+  }
+  function recoveryFrom(ax){
+    return {physical:ax["recovery::physical"]||0, emotional:ax["recovery::emotional"]||0, mental:ax["recovery::mental"]||0};
+  }
+  function motiveFrom(ax){
+    return {goal:ax["motive::goal"]||0, social:ax["motive::social"]||0, growth:ax["motive::growth"]||0, stable:ax["motive::stable"]||0};
+  }
+
+  function pct(v){ return v+"%"; }
+
+  // ============ SVG CHARTS (with percentages) ============
+  var CHART_COLORS=["#7a4a2a","#8a5a3b","#a8813c","#5d7a4a","#7a5d6b","#4a6a8a","#6b6a4a"];
+  function svgNS(){ return "http://www.w3.org/2000/svg"; }
+  function svgEl(n,a){ var e=document.createElementNS(svgNS(),n); for(var k in a){e.setAttribute(k,a[k]);} return e; }
+
+  function pieChart(data, size){
+    size=size||250; var cx=size/2, cy=size/2, r=size/2-14;
+    var svg=svgEl("svg",{viewBox:"0 0 "+size+" "+size, role:"img"});
+    svg.setAttribute("aria-label","pie chart");
+    var total=0; data.forEach(function(d){ total+=d.value; });
+    if(total<=0) return svg;
+    var ang=-Math.PI/2, step=Math.PI*2/total;
+    data.forEach(function(d,i){
+      if(d.value<=0) return;
+      var sweep=d.value*step;
+      var x1=cx+r*Math.cos(ang), y1=cy+r*Math.sin(ang);
+      var x2=cx+r*Math.cos(ang+sweep), y2=cy+r*Math.sin(ang+sweep);
+      var large=sweep>Math.PI?1:0;
+      svg.appendChild(svgEl("path",{d:"M"+cx+" "+cy+" L"+x1.toFixed(2)+" "+y1.toFixed(2)+" A"+r+" "+r+" 0 "+large+" 1 "+x2.toFixed(2)+" "+y2.toFixed(2)+" Z",fill:CHART_COLORS[i%CHART_COLORS.length],stroke:"#fdf6e5","stroke-width":"2"}));
+      ang+=sweep;
+    });
+    svg.appendChild(svgEl("circle",{cx:cx,cy:cy,r:r*0.60,fill:"#fdf8e8","stroke":"#c9b489"}));
+    return svg;
+  }
+
+  function barChart(data, size){
+    size=size||250; var labelH=44, top=26, W=size, H=size;
+    var svg=svgEl("svg",{viewBox:"0 0 "+W+" "+H, role:"img"});
+    svg.setAttribute("aria-label","bar chart");
+    var n=data.length, plotW=W-16, slot=plotW/n, barW=Math.max(12,slot*0.5), plotH=H-top-labelH;
+    data.forEach(function(d,i){
+      var x=8+slot*i+(slot-barW)/2, h=plotH*(d.value/100), y=top+(plotH-h);
+      svg.appendChild(svgEl("rect",{x:x,y:y,width:barW,height:Math.max(0,h),rx:4,fill:CHART_COLORS[i%CHART_COLORS.length]}));
+      var tx=x+barW/2;
+      var lab=svgEl("text",{x:tx,y:H-18,"text-anchor":"middle","font-size":size*0.05,fill:"#6b5a3e"});
+      lab.textContent=d.label;
+      svg.appendChild(lab);
+      var vt=svgEl("text",{x:tx,y:y-7,"text-anchor":"middle","font-size":size*0.058,fill:"#3b2f1d","font-weight":"700"});
+      vt.textContent=Math.round(d.value)+"%";
+      svg.appendChild(vt);
+    });
+    return svg;
+  }
+
+  function legendHTML(data){
+    var total=0; data.forEach(function(d){ total+=d.value; });
+    var html='<div class="legend">';
+    data.forEach(function(d,i){
+      var pctShare = total>0 ? Math.round(d.value/total*100) : 0;
+      html+='<span class="lg"><span class="sw" style="background:'+CHART_COLORS[i%CHART_COLORS.length]+'"></span>'+d.label+' <b>'+pctShare+'%</b></span>';
+    });
+    html+='</div>';
+    return html;
+  }
+
+  function bar(name,val,top){
+    var row=document.createElement("div"); row.className="score-row";
+    var head=document.createElement("div"); head.className="score-head";
+    var n=document.createElement("span"); n.textContent=name;
+    var v=document.createElement("span"); v.textContent=pct(val);
+    head.appendChild(n); head.appendChild(v);
+    var b=document.createElement("div"); b.className="score-bar";
+    var f=document.createElement("i"); f.style.width=val+"%"; if(top){f.classList.add("top");}
+    b.appendChild(f);
+    row.appendChild(head); row.appendChild(b);
+    return row;
+  }
+
+  // ============ RENDER RESULT ============
+  function renderResult(){
+    var ax=axisSums();
+    var crit=criticFrom(ax), rec=recoveryFrom(ax), mot=motiveFrom(ax);
+    var al=AXIS_LABEL[LANG], rl=REC_LABEL[LANG], gl=GAP[LANG], cl=CRIT_LABEL[LANG];
+    var body=document.getElementById("res-body"); body.innerHTML="";
+
+    var sev=crit.severity;
+    var clab = sev<34?cl.soft : (sev<60?cl.mid:cl.hard);
+    var ctag = sev<34?cl.softT : (sev<60?cl.midT:cl.hardT);
+    var recVals=[["physical",rec.physical],["emotional",rec.emotional],["mental",rec.mental]].sort(function(a,b){return b[1]-a[1];});
+    var recMain=recVals[0][0];
+    var recName=recVals[0][0]==="physical"?rl.physical:(recVals[0][0]==="emotional"?rl.emotional:rl.mental);
+    var motVals=[["goal",mot.goal],["social",mot.social],["growth",mot.growth],["stable",mot.stable]].sort(function(a,b){return b[1]-a[1];});
+    var motMain=motVals[0][0];
+    var motName={goal:rl.goal,social:rl.social,growth:rl.growth,stable:rl.stable}[motMain];
+
+    var sumPt = (UI[LANG].percent||"%");
+    document.getElementById("res-summary-tag").textContent =
+      clab.toLowerCase()+". "+rl.recLead+recName.toLowerCase()+". "+rl.motLead+motName.toLowerCase()+".";
+
+    // charts
+    var cc=document.createElement("div"); cc.className="charts";
+    var pieCard=document.createElement("div"); pieCard.className="chart-card";
+    var pT=document.createElement("h5"); pT.textContent=al.pieTitle||"Motivation"; pieCard.appendChild(pT);
+    var pieData=[{label:al.goal,value:Math.max(1,mot.goal)},{label:al.social,value:Math.max(1,mot.social)},{label:al.growth,value:Math.max(1,mot.growth)},{label:al.stable,value:Math.max(1,mot.stable)}];
+    pieCard.appendChild(pieChart(pieData));
+    pieCard.insertAdjacentHTML("beforeend",legendHTML(pieData));
+    cc.appendChild(pieCard);
+    var barCard=document.createElement("div"); barCard.className="chart-card";
+    var bT=document.createElement("h5"); bT.textContent=al.barTitle||"Blocks"; barCard.appendChild(bT);
+    var rAvg=Math.round((rec.physical+rec.emotional+rec.mental)/3);
+    var mAvg=Math.round((mot.goal+mot.social+mot.growth+mot.stable)/4);
+    var barData=[{label:al.b1,value:Math.max(2,sev)},{label:al.b2,value:Math.max(2,rAvg)},{label:al.b3,value:Math.max(2,mAvg)}];
+    barCard.appendChild(barChart(barData));
+    barCard.insertAdjacentHTML("beforeend",legendHTML(barData));
+    cc.appendChild(barCard);
+    body.appendChild(cc);
+
+    // block 1
+    var s1=document.createElement("section"); s1.className="res-block";
+    var h1=document.createElement("h3"); h1.textContent="1 · "+al.critBlock; s1.appendChild(h1);
+    var l1=document.createElement("p"); l1.className="res-lead"; l1.textContent=rl.critType+clab+" ("+ctag+")"; s1.appendChild(l1);
+    var d1=document.createElement("p"); d1.className="desc"; d1.textContent=DESC[LANG][sev<34?"crit_soft":(sev<60?"crit_mid":"crit_hard")]; s1.appendChild(d1);
+    s1.appendChild(bar(al.voice,crit.voice,crit.voice>=60));
+    s1.appendChild(bar(al.harsh,crit.harsh,crit.harsh>=60));
+    s1.appendChild(bar(al.forgive,crit.forgive,crit.forgive>=60));
+    body.appendChild(s1);
+
+    // block 2
+    var s2=document.createElement("section"); s2.className="res-block";
+    var h2=document.createElement("h3"); h2.textContent="2 · "+al.recBlock; s2.appendChild(h2);
+    var l2=document.createElement("p"); l2.className="res-lead"; l2.textContent=rl.recLead+recName; s2.appendChild(l2);
+    var d2=document.createElement("p"); d2.className="desc"; d2.textContent=DESC[LANG]["rec_"+recMain]; s2.appendChild(d2);
+    s2.appendChild(bar(al.physical,rec.physical,rec.physical>=60));
+    s2.appendChild(bar(al.emotional,rec.emotional,rec.emotional>=60));
+    s2.appendChild(bar(al.mental,rec.mental,rec.mental>=60));
+    body.appendChild(s2);
+
+    // block 3
+    var s3=document.createElement("section"); s3.className="res-block";
+    var h3=document.createElement("h3"); h3.textContent="3 · "+al.motBlock; s3.appendChild(h3);
+    var l3=document.createElement("p"); l3.className="res-lead"; l3.textContent=rl.motLead+motName; s3.appendChild(l3);
+    var d3=document.createElement("p"); d3.className="desc"; d3.textContent=DESC[LANG]["mot_"+motMain]; s3.appendChild(d3);
+    s3.appendChild(bar(al.goal,mot.goal,mot.goal>=60));
+    s3.appendChild(bar(al.social,mot.social,mot.social>=60));
+    s3.appendChild(bar(al.growth,mot.growth,mot.growth>=60));
+    s3.appendChild(bar(al.stable,mot.stable,mot.stable>=60));
+    body.appendChild(s3);
+
+    // self vs test
+    var sd=document.createElement("section"); sd.className="res-detail";
+    var hd=document.createElement("h4"); hd.textContent=UI[LANG].selfTitle; sd.appendChild(hd);
+    var cVal=sev, rVal=rAvg, mVal=mAvg;
+    var selfs=[answers["s0"],answers["s1"],answers["s2"]];
+    var reals=[cVal,rVal,mVal];
+    GAP_name_check(gl);
+    for(var gi=0;gi<3;gi++){
+      var box=document.createElement("div"); box.className="meta-gap";
+      var gt=document.createElement("p"); gt.className="g"; gt.textContent=gl.names[gi]+": ";
+      var realQ=reals[gi]<34?0:(reals[gi]<60?1:2);
+      var selfQ=selfs[gi]?selfs[gi].value:-1;
+      var vis;
+      if(selfQ<0){ vis="—"; }
+      else { var gap=Math.abs(selfQ-realQ); vis = gap===0?gl.exact:(gap===1?gl.near:gl.far); }
+      var b=document.createElement("b"); b.textContent=vis; gt.appendChild(b); box.appendChild(gt);
+      var note=document.createElement("p"); note.className="meta-note";
+      note.textContent=gl.test+pct(reals[gi])+". "+gl.your+(selfQ<0?gl.notChosen:(selfQ===0?gl.low:selfQ===1?gl.mid:gl.high))+".";
+      box.appendChild(note);
+      sd.appendChild(box);
+    }
+    sd.appendChild(bar(al.criticBar,cVal,cVal>=60));
+    sd.appendChild(bar(al.recBar,rVal,rVal>=60));
+    sd.appendChild(bar(al.motBar,mVal,mVal>=60));
+    body.appendChild(sd);
+
+    // metaphors
+    var md=document.createElement("section"); md.className="res-detail";
+    var mh=document.createElement("h4"); mh.textContent=UI[LANG].metaTitle; md.appendChild(mh);
+    var mKeys=["m0","m1","m2"];
+    var shown=0;
+    mKeys.forEach(function(k,i){
+      var a=answers[k]; if(!a) return;
+      var box=document.createElement("div"); box.className="meta-gap";
+      var p=document.createElement("p"); p.className="g"; p.textContent=(shown+1)+") ";
+      var b=document.createElement("b"); b.textContent=META_TEXT[LANG][a.value]||""; p.appendChild(b);
+      box.appendChild(p);
+      md.appendChild(box); shown++;
+    });
+    if(shown>0) body.appendChild(md);
+
+    // --- social desirability scale ---
+    var sd=sdScore();
+    var sdc=document.createElement("section"); sdc.className="res-detail";
+    var sdh=document.createElement("h4"); sdh.textContent=UI[LANG].sdTitle; sdc.appendChild(sdh);
+    var sdBar=bar(UI[LANG].sdTitle, sd.pct, sd.pct>=60);
+    sdc.appendChild(sdBar);
+    var sdp=document.createElement("p"); sdp.className="desc";
+    sdp.textContent = sd.pct<34?UI[LANG].sdLow : (sd.pct<60?UI[LANG].sdMid : UI[LANG].sdHigh);
+    sdc.appendChild(sdp);
+    body.appendChild(sdc);
+
+    // mixed + recommendations
+    var recd=document.createElement("section"); recd.className="res-detail";
+    var rh=document.createElement("h4"); rh.textContent=UI[LANG].recTitle; recd.appendChild(rh);
+    var mixed=[];
+    if(Math.abs(crit.voice-crit.forgive)<18){ mixed.push("criticUneven"); }
+    if(Math.abs(rec.physical-rec.mental)<12){ mixed.push("recMixed"); }
+    if((Math.abs(mot.goal-mot.stable)<12&&Math.abs(mot.growth-mot.social)<12)||(Math.abs(mot.goal-mot.growth)<12&&Math.abs(mot.social-mot.stable)<12)){ mixed.push("motMixed"); }
+    if(mixed.length>0){
+      var mb=document.createElement("div"); mb.className="meta-gap";
+      var mt=document.createElement("p"); mt.className="g"; mt.textContent=UI[LANG].mixedTitle; mb.appendChild(mt);
+      var mn=document.createElement("p"); mn.className="meta-note"; mn.textContent=UI[LANG].mixedLead+mixed.join("; "); mb.appendChild(mn);
+      recd.appendChild(mb);
+    }
+    var ul=document.createElement("ul"); ul.className="rec-list";
+    function recItem(tx){ var li=document.createElement("li"); li.textContent=tx; return li; }
+    var R=REC[LANG];
+    if(sev>=60){ ul.appendChild(recItem(R.critHard)); ul.appendChild(recItem(R.critHard2)); }
+    else if(sev<34){ ul.appendChild(recItem(R.critSoft)); }
+    else { ul.appendChild(recItem(R.critMid)); }
+    if(recMain==="physical"){ ul.appendChild(recItem(R.recPhysical)); }
+    else if(recMain==="emotional"){ ul.appendChild(recItem(R.recEmotional)); }
+    else { ul.appendChild(recItem(R.recMental)); }
+    if(motMain==="goal"){ ul.appendChild(recItem(R.motGoal)); }
+    else if(motMain==="social"){ ul.appendChild(recItem(R.motSocial)); }
+    else if(motMain==="growth"){ ul.appendChild(recItem(R.motGrowth)); }
+    else { ul.appendChild(recItem(R.motStable)); }
+    if(mixed.length>0){ ul.appendChild(recItem(R.mixed)); }
+    recd.appendChild(ul);
+
+    // open answers echo
+    var openUsed=[];
+    ["o0","o1","o2"].forEach(function(k){ var a=answers[k]; if(a&&a.value&&a.value.length>0){ openUsed.push(a.value); } });
+    if(openUsed.length>0){
+      var ob=document.createElement("div"); ob.className="meta-gap";
+      var ot=document.createElement("p"); ot.className="g"; ot.textContent=UI[LANG].openNoteTitle; ob.appendChild(ot);
+      var on=document.createElement("p"); on.className="meta-note";
+      on.textContent=UI[LANG].openNote.replace("{{list}}","\u00AB"+openUsed.join("\u00BB; \u00AB")+"\u00BB");
+      ob.appendChild(on);
+      recd.appendChild(ob);
+    }
+    body.appendChild(recd);
+    window.scrollTo(0,0);
+  }
+
+  function GAP_name_check(g){ if(!g){ return; } }
+
+  // ============ SEND RESULT (anonymous) ============
+  // Собирает текущий результат и отправляет в Supabase (таблица test_results).
+  function currentResultData(){
+    var ax=axisSums();
+    var crit=criticFrom(ax), rec=recoveryFrom(ax), mot=motiveFrom(ax);
+    var sev=crit.severity;
+    var clab = sev<34?"soft":(sev<60?"mid":"hard");
+    var recVals=[["physical",rec.physical],["emotional",rec.emotional],["mental",rec.mental]].sort(function(a,b){return b[1]-a[1];});
+    var recMain=recVals[0][0];
+    var motVals=[["goal",mot.goal],["social",mot.social],["growth",mot.growth],["stable",mot.stable]].sort(function(a,b){return b[1]-a[1];});
+    var motMain=motVals[0][0];
+    var rAvg=Math.round((rec.physical+rec.emotional+rec.mental)/3);
+    var mAvg=Math.round((mot.goal+mot.social+mot.growth+mot.stable)/4);
+    var meta={
+      m0: answers["m0"]?answers["m0"].value:"",
+      m1: answers["m1"]?answers["m1"].value:"",
+      m2: answers["m2"]?answers["m2"].value:""
+    };
+    function openVal(i){ var a=answers["o"+i]; return (a&&a.value)?a.value:""; }
+    return {
+      lang: LANG,
+      name: USERNAME||"",
+      critic_type: clab,
+      critic_severity: sev,
+      recovery_channel: recMain,
+      motive_engine: motMain,
+      critic_voice:crit.voice, recovery_avg:rAvg, motive_avg:mAvg,
+      meta_critic:meta.m0, meta_recovery:meta.m1, meta_motive:meta.m2,
+      open1:openVal(0), open2:openVal(1), open3:openVal(2),
+      full_report: buildReport()
+    };
+  }
+
+  function buildReport(){
+    var ax=axisSums();
+    var crit=criticFrom(ax), rec=recoveryFrom(ax), mot=motiveFrom(ax);
+    var al=AXIS_LABEL[LANG], rl=REC_LABEL[LANG], cl=CRIT_LABEL[LANG];
+    var sev=crit.severity;
+    var clab=sev<34?cl.soft:(sev<60?cl.mid:cl.hard);
+    var recMain=[["physical",rec.physical],["emotional",rec.emotional],["mental",rec.mental]].sort(function(a,b){return b[1]-a[1];})[0][0];
+    var recName=recMain==="physical"?rl.physical:(recMain==="emotional"?rl.emotional:rl.mental);
+    var motMain=[["goal",mot.goal],["social",mot.social],["growth",mot.growth],["stable",mot.stable]].sort(function(a,b){return b[1]-a[1];})[0][0];
+    var motName={goal:rl.goal,social:rl.social,growth:rl.growth,stable:rl.stable}[motMain];
+    var rAvg=Math.round((rec.physical+rec.emotional+rec.mental)/3);
+    var mAvg=Math.round((mot.goal+mot.social+mot.growth+mot.stable)/4);
+    var lines=[];
+    lines.push(UI[LANG].resultTitle);
+    lines.push("--------------------------------");
+    if(USERNAME){ lines.push("Имя: "+USERNAME); }
+    lines.push("1. "+al.critBlock+": "+clab+" ("+sev+"%)");
+    lines.push("   "+al.voice+": "+(crit.voice)+"%, "+al.harsh+": "+(crit.harsh)+"%, "+al.forgive+": "+(crit.forgive)+"%");
+    lines.push("2. "+al.recBlock+": "+recName+" ("+rAvg+"%)");
+    lines.push("   "+al.physical+": "+(rec.physical)+"%, "+al.emotional+": "+(rec.emotional)+"%, "+al.mental+": "+(rec.mental)+"%");
+    lines.push("3. "+al.motBlock+": "+motName+" ("+mAvg+"%)");
+    lines.push("   "+al.goal+": "+(mot.goal)+"%, "+al.social+": "+(mot.social)+"%, "+al.growth+": "+(mot.growth)+"%, "+al.stable+": "+(mot.stable)+"%");
+    var sdR=sdScore();
+    lines.push("4. "+UI[LANG].sdTitle+": "+(sdR.pct)+"%");
+    lines.push("   "+(sdR.pct<34?UI[LANG].sdLow:(sdR.pct<60?UI[LANG].sdMid:UI[LANG].sdHigh)));
+    if(answers["m0"]){ lines.push("Метафора-критик: "+(META_TEXT[LANG][answers["m0"].value]||"")); }
+    if(answers["m1"]){ lines.push("Метафора-восстановление: "+(META_TEXT[LANG][answers["m1"].value]||"")); }
+    if(answers["m2"]){ lines.push("Метафора-мотивация: "+(META_TEXT[LANG][answers["m2"].value]||"")); }
+    ["o0","o1","o2"].forEach(function(k){
+      var a=answers[k]; if(a&&a.value){ lines.push("Открытый ответ: "+a.value); }
+    });
+    return lines.join("\n");
+  }
+
+  function setSendStatus(msg, cls){
+    var el=document.getElementById("send-status");
+    el.className="send-status"+(cls?(" "+cls):"");
+    el.textContent=msg;
+  }
+
+  function sendResult(){
+    var status=document.getElementById("send-status");
+    if(!SB_CONFIG.anonKey || SB_CONFIG.anonKey.indexOf("PASTE_")===0){
+      setSendStatus(t("sendNoKey"), "error");
+      return;
+    }
+    var btn=document.getElementById("btn-send");
+    btn.disabled=true;
+    setSendStatus(t("sendSending"), "");
+    var payload=currentResultData();
+    fetch(SB_CONFIG.url+"/rest/v1/"+SB_CONFIG.table+"?apikey="+encodeURIComponent(SB_CONFIG.anonKey), {
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json",
+        "apikey": SB_CONFIG.anonKey,
+        "Authorization":"Bearer "+SB_CONFIG.anonKey
+      },
+      body: JSON.stringify(payload)
+    }).then(function(res){
+      if(!res.ok){ throw new Error("HTTP "+res.status); }
+      setSendStatus(t("sendOk"), "ok");
+      var rep=document.getElementById("send-report");
+      rep.textContent=buildReport();
+      rep.hidden=false;
+    }).catch(function(){
+      setSendStatus(t("sendErr"), "error");
+    }).finally(function(){
+      btn.disabled=false;
+    });
+  }
+
+  // ============ INIT ============
+  document.getElementById("btn-start").addEventListener("click", function(){
+    var nameInput=document.getElementById("in-name");
+    var nm=(nameInput.value||"").trim();
+    if(!nm){
+      nameInput.focus();
+      document.getElementById("name-hint").hidden=false;
+      return;
+    }
+    document.getElementById("name-hint").hidden=true;
+    USERNAME=nm;
+    current=0; show("quiz"); renderStep();
+  });
+  document.getElementById("btn-next").addEventListener("click", nextStep);
+  document.getElementById("btn-prev").addEventListener("click", prevStep);
+  document.getElementById("btn-restart").addEventListener("click", function(){ answers={}; current=0; show("start"); });
+  document.getElementById("btn-send").addEventListener("click", sendResult);
+
+  // language switcher
+  var langBtns=document.querySelectorAll(".langbar button.lang");
+  langBtns.forEach(function(b){
+    b.addEventListener("click", function(){
+      LANG=b.getAttribute("data-lang");
+      langBtns.forEach(function(x){ x.classList.remove("active"); });
+      b.classList.add("active");
+      applyLang();
+    });
+  });
+  applyLang();
+
+</script>
+</body>
+</html>
